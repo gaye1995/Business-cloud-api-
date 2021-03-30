@@ -3,6 +3,7 @@ import { comparePassword, hashPassword } from '../helpers/passwordhelpers';
 import Datahelpers from '../helpers/Datahelpers';
 import { UsersInterface } from '../interfaces/UsersInterface';
 import { UserModel } from '../models/UsersModel';
+import { notifyNew } from '../utils/mails';
 
 export class UserController {
     static login = async (req: Request, res: Response) => {
@@ -12,10 +13,11 @@ export class UserController {
             const User: any = await UserModel.findOne({email : email});
             // email doesn't existe 
             if (!User) throw { code: 402 }
-            if(await comparePassword(password, User.password)) throw { code: 404}
+            if(!await comparePassword(password, User.password)) throw { code: 404}
 
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'The user has been successfully connected', user: { id: User.id, name: User.name, email: User.email } });
+            await notifyNew(User.email);
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
             if (err.code === 402) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
@@ -29,6 +31,7 @@ export class UserController {
             if (!name || !email || !password) throw {code: 400};
             if (!Datahelpers.checkEmail(email)) throw {code: 401};
             const User: any = await UserModel.findOne({email : email});
+            console.log(User);
             // email existe 
             if (User) throw {code: 402}
             if (!Datahelpers.checkPassword(password)) throw {code: 403};
@@ -36,8 +39,8 @@ export class UserController {
             if (phone && !Datahelpers.checkTel(phone)) throw {code: 404};
             if (birthdayDate && !Datahelpers.checkDate(birthdayDate)) throw {code: 405};
             // Create user
-            const user: UsersInterface = await User.create(req.body);
-
+            const user: any = await UserModel.create(req.body);
+            await notifyNew(user.email);
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'The user has been successfully created', user: { id: user.id, name: user.name, email: user.email } });
         } catch (err) {
@@ -50,35 +53,20 @@ export class UserController {
         }
 
     }
-    // static resetPassword = async (req: Request, res: Response) => {
-    //     try {
-    //         // Récupération de toutes les données du body
-    //         const { email } = req.body;
-
-    //         // Vérification de si toutes les données nécessaire sont présentes
-    //         if (!email) throw new Error('Missing email field');
-
-    //         // Vérification de l'email de l'utilisateur
-    //         if (!VerifyData.validEmail(email)) throw new Error('Invalid email addresse');
-
-    //         // Récupération de l'utilisateur si il existe, on envoie le mail
-    //         const user = await findUser(email);
-    //         if (user) {
-    //             // Création du token à envoyer
-    //             const token = await generatePasswordToken(user);
-
-    //             // Envoi du mail de récupération de mot de passe
-    //             if (user) sendRegister(email, 'Mot de passe oublié', passwordLostModel(user.data.name, token));
-
-    //             // Envoi de la réponse
-    //             sendResponse(res, 200, { error: false, message: 'Email successfully send' });
-    //         } else { // Si l'utilisateur n'existe pas, on renvoit quand même le même message de succès
-    //             sendResponse(res, 200, { error: false, message: 'Email successfully send' });
-    //         }
-    //     } catch (err) {
-    //         console.log(err);
-    //         if (err.message === 'Missing email field') sendResponse(res, 400, { error: false, code: '101101', message: err.message });
-    //         if (err.message === 'Invalid email addresse') sendResponse(res, 400, { error: false, code: '101102', message: err.message });
-    //     }
-    // }
+    static resetPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            if (!email) throw { code: 400 };
+            // Récupération de l'utilisateur si il existe, on envoie le mail
+            const user = await UserModel.findOne({ email });
+            if (user) {
+                res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
+            } else {
+            res.status(404).send({ error: false, message: 'Email does not exist' });
+            }
+        } catch (err) {
+            console.log(err);
+            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
+        }
+    }
 }
