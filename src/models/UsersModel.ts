@@ -44,17 +44,6 @@ const userSchema = new mongoose.Schema({
             type: Number
         }
     },
-    double_authentification: {
-        activated: {
-            type: Boolean
-        },
-        code: {
-            type: String
-        },
-        date: {
-            type: Number
-        }
-    },
     verify_email: {
         code: {
             type: String
@@ -66,15 +55,9 @@ const userSchema = new mongoose.Schema({
             type: Boolean
         }
     },
-    currency: {
-        type: String,
-    },
-    isActive: {
-        type: Boolean,
-        default: true,
-    },
+ 
 }, { timestamps: true });
 
-const User = mongoose.model('user', userSchema);
+const UserModel = mongoose.model('user', userSchema);
 
-export { User };
+export { UserModel };
