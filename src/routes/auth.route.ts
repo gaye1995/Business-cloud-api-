@@ -1,9 +1,11 @@
-const auth = require('express').Router();
-import {UsersControllers} from '../controllers/UsersControllers'
+import express from 'express';
+import { UserController } from '../controllers/UserController';
 
-/**
- * POST
- */
-auth.post('/auth/register', UsersControllers.register);
+const route: express.Application = express();
 
-module.exports = auth;
+route.post('/auth/login', UserController.login);
+route.post('/auth/register', UserController.register);
+route.post('/auth/forget-password', UserController.requestPasswordLost);
+
+
+export { route as RouterUser };

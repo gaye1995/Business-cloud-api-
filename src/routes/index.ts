@@ -1,10 +1,9 @@
+import express from 'express';
+import { RouterUser} from './auth.route';
 
-// let expresse:any = require('express');
-// const router:any = expresse.Router();
-// const authe:any = require('./auth.route');
+const route: express.Application = express();
 
+route.use(RouterUser);
+route.use(RouterUser);
 
-// router.use('/auth', authe);
-
-// module.exports = router;
-
+export { route as RouteIndex };
