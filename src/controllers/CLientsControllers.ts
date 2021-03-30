@@ -53,42 +53,5 @@ export class UserController {
         }
 
     }
-    static resetPassword = async (req: Request, res: Response) => {
-        try {
-            const { email } = req.body;
-            if (!email) throw { code: 400 };
-            // Récupération de l'utilisateur si il existe, on envoie le mail
-            const user = await UserModel.findOne({ email });
-            if (user) {
-                res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
-            } else {
-            res.status(404).send({ error: false, message: 'Email does not exist' });
-            }
-        } catch (err) {
-            console.log(err);
-            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
-        }
-    }
-    static getUsers = async (req: Request, res: Response) => {
-        try {
-            const {  email } = req.params;
-            console.log(email);
-            // if (!data) throw { code: 400 };
-            const user: any = await UserModel.findOne({ email });
-            if(user) {
-                res.status(200).send({ error: false, message: 'Details user', user: { name: user.name, email: user.email, phone: user.phone, avatar: user.avatar } });
-            } else {
-            res.status(404).send({ error: false, message: 'Email does not exist' });
-            }
-        } catch (err) {
-            console.log(err);
-            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
-        }
-    }
-    static updateUsers = async (req: Request, res: Response) => {
-        try {
-            
-        } catch (err) {
-        }
-    }
+
 }
