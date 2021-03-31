@@ -17,7 +17,6 @@ export class UserController {
 
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'The user has been successfully connected', user: { id: User.id, name: User.name, email: User.email } });
-            await notifyNew(User.email);
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
             if (err.code === 402) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
@@ -40,7 +39,6 @@ export class UserController {
             if (birthdayDate && !Datahelpers.checkDate(birthdayDate)) throw {code: 405};
             // Create user
             const user: any = await UserModel.create(req.body);
-            await notifyNew(user.email);
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'The user has been successfully created', user: { id: user.id, name: user.name, email: user.email } });
         } catch (err) {

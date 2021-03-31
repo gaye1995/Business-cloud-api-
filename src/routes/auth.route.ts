@@ -1,6 +1,5 @@
 import express from 'express';
 import { UserController } from '../controllers/UsersControllers';
-
 const route: express.Application = express();
 
 route.post('/auth/login', UserController.login);

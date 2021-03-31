@@ -7,7 +7,7 @@ export default class Datahelpers {
     }
     static checkPassword(password: string): boolean {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
-        if (password.trim().length < 7 || password.trim().length > 30) return false;
+        if (password.trim().length < 8 || password.trim().length > 20) return false;
         else return regex.test(password);
     }
     static checkTel(phone: string): boolean {
