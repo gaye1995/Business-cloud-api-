@@ -4,10 +4,73 @@ export interface UsersInterface {
         email: string;
         phone?: string;
         birthdayDate?: string;
+        avatar?: string;
+        address?: string;
+        zip?: string;
+        city?: string;
+        country?: string;
+        createdAt: Date;
+        updatedAt: Date;
+        currency?: string;
+        token?: string;
         reset_password?: { token: string, date: number };
         verify_email?: { code: number, date: number, verified: boolean };
     }
     
+export interface UsersInterfaceJson {
+        name: string;
+        email: string;
+        phone?: string;
+        birthdayDate?: string;
+        avatar?: string;
+        createdAt: Date;
+        updatedAt: Date;
+        address?: string;
+        zip?: string;
+        city?: string;
+        country?: string;
+        currency?: string;
+        token?: string;
+}
+export interface ClientInterface {
+    _id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    birthdayDate?: string;
+    avatar?: string;
+    address?: string;
+    zip?: string;
+    city?: string;
+    country?: string;
+    numTVA?: string;
+    numSIRET?: string;
+    numRCS?: string;
+    createdAt: Date;
+    updatedAt: Date;
+    post?: string;
+    currency?: string;
+    token: string;
+}
+export interface ClientInterfaceJson {
+    name: string;
+    email: string;
+    phone?: string;
+    birthdayDate?: string;
+    avatar?: string;
+    address?: string;
+    zip?: string;
+    city?: string;
+    country?: string;
+    numTVA?: string;
+    numSIRET?: string;
+    numRCS?: string;
+    createdAt: Date;
+    updatedAt: Date;
+    post?: string;
+    currency?: string;
+    token: string;
+}
     
 export interface EditUser {
     _id?: string;

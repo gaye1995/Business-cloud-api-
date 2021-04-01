@@ -24,15 +24,8 @@ export const getJwtPayload = async(token: string): Promise < any | null > => {
     return null;
 };
 export const getAuthToken = async (user: any) => {
-    jsonwebtoken.sign({
-         _id: user._id,
-         email: user.email }, 
-         JWT_KEY,
-        { expiresIn: '24h' }
-        )
-        console.log(JWT_KEY);
-        await updateUser(user, { token: user.token });
-        console.log(user.token);
-        return user;
-
+    const token = jsonwebtoken.sign({ _id: user._id, email: user.email }, JWT_KEY, { expiresIn: '24h' })
+    user.token = token;
+    await updateUser(user, { token: user.token });
+    return user;
 };

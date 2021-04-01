@@ -16,4 +16,10 @@ export default class Datahelpers {
     static checkDate(birthdayDate: string): boolean {
         return validator.isDate(birthdayDate, { format: 'DD-MM-YYYY', strictMode: true, delimiters: ['-', '/', '.'] });
     }
+    static checkBic(bic: string): boolean {
+        return validator.isBic(bic);
+    }
+    static checkIBan(iban: string): boolean {
+        return validator.isBic(iban);
+    }
 }

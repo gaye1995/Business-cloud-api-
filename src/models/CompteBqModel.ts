@@ -17,7 +17,8 @@ const comptebqSchema = new mongoose.Schema({
     },
     bic: {
         type: Date,
-    }, address: {
+    }, 
+    address: {
         type: String,
         required: [true],
     },

@@ -6,6 +6,7 @@ import { UserModel } from '../models/UsersModel';
 import { notifyNew } from '../utils/mails';
 import * as jwt from '../middlewares/checkJwt';
 import { updateUser } from '../helpers/checkFunction/editUser';
+import { UserJSON } from '../utils/returnData'
 
 export class UserController {
     static login = async (req: Request, res: Response) => {
@@ -19,9 +20,9 @@ export class UserController {
             if (!User) throw { code: 402 }
             if(!await comparePassword(password, User.password)) throw { code: 404}
             User = await jwt.getAuthToken(User);
-            // console.log(User);
+            const dataUser: any = UserJSON(User);
             // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'The user has been successfully connected', user: { id: User.id, name: User.name, email: User.email,token: User.token } });
+            res.status(200).send({ error: false, message: 'The user has been successfully connected', user: dataUser });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
             if (err.code === 402) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
@@ -81,15 +82,8 @@ export class UserController {
     }
     static getUsers = async (req: Request, res: Response) => {
         try {
-            const  email  = req.params;
-            console.log(email);
-            // if (!data) throw { code: 400 };
-            const user: any = await UserModel.findOne({ email });
-            if(user) {
-                res.status(200).send({ error: false, message: 'Details user', user: { name: user.name, email: user.email, phone: user.phone, avatar: user.avatar } });
-            } else {
-            res.status(404).send({ error: false, message: 'Email does not exist' });
-            }
+            const autorization: any = jwt.getToken('')
+        
         } catch (err) {
             console.log(err);
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
@@ -104,3 +98,4 @@ export class UserController {
         }
     }
 }
+

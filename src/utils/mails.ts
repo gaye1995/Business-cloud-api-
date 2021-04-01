@@ -1,5 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import { config } from 'dotenv';
+(config);
 const emetedemail = process.env.EMAIL_USER;
 const emetedpassword =  process.env.EMAIL_PASSWORD;
 const notifyNew = async (email: string, mySubject: string, myContent: string): Promise<void> => {
