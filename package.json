@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 kill && pm2 start ts-node app.ts -i 5 --interpreter ./node_modules/.bin/ts-node --watch && pm2 logs",
+    "start": "nodemon app.ts",
     "dev": "nodemon app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc"
   },
   "keywords": [],
   "author": "",
