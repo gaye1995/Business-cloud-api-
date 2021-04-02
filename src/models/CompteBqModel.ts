@@ -7,16 +7,17 @@ const comptebqSchema = new mongoose.Schema({
     },
     libelleComptable: {
         type: String,
-        required: [true],
     },
     name: {
         type: String,
+        required: [true],
     },
     iban: {
         type: String,
     },
     bic: {
-        type: Date,
+        type: String,
+        required: [true],
     }, 
     address: {
         type: String,
@@ -36,25 +37,18 @@ const comptebqSchema = new mongoose.Schema({
     },
     firstname: {
         type: String,
-        required: [true],
     },
     lastname: {
         type: String,
-        required: [true],
     },
     email: {
         type: String,
-        required: [true],
     },
     phone: {
         type: String,
     },
     fax: {
         type: String,
-    },
-    isActive: {
-        type: Boolean,
-        default: true,
     },
 }, { timestamps: true });
 

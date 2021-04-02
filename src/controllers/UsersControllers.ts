@@ -7,6 +7,7 @@ import { notifyNew } from '../utils/mails';
 import * as jwt from '../middlewares/checkJwt';
 import { updateUser } from '../helpers/checkFunction/editUser';
 import { UserJSON } from '../utils/returnData'
+import { tokenToString } from 'typescript';
 
 export class UserController {
     static login = async (req: Request, res: Response) => {
@@ -60,32 +61,17 @@ export class UserController {
             if (err.code === 405) res.status(400).send({ error: true, message: 'incorect format date' });
         }
 
-    }
-    static resetPassword = async (req: Request, res: Response) => {
-        try {
-            const subject: string = 'Demande de réinitialisation du mot de passe'
-            const content: string = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
-            const { email } = req.body;
-            if (!email) throw { code: 400 };
-            // Récupération de l'utilisateur si il existe, on envoie le mail
-            const user: any = await UserModel.findOne({ email });
-            if (user) {
-                notifyNew(user.email, subject, content)
-                res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
-            } else {
-            res.status(404).send({ error: false, message: 'Email does not exist' });
-            }
-        } catch (err) {
-            console.log(err);
-            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
-        }
-    }
+    } 
     static getUsers = async (req: Request, res: Response) => {
         try {
-            const autorization: any = jwt.getToken('')
-        
+            const authorization: any = req.headers.authorization;
+            const token :string =  await jwt.getToken(authorization);
+            const user:any = jwt.getJwtPayload(token);
+
+        const allUsers: any = UserModel.findOne({email: user.email} );
+        console.log(UserJSON(allUsers));
+
         } catch (err) {
-            console.log(err);
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
         }
     }
@@ -95,6 +81,26 @@ export class UserController {
             const user: any = await UserModel.findOne({ email: data.email });
             await updateUser(user, { ...data });
         } catch (err) {
+        }
+    }
+    static forgetPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            if (!email) throw {code: 400};
+            const user: any = await UserModel.findOne({email: email});
+            if (user) {
+                // l'envoie du token 
+                const token = await jwt.getAuthToken(user);
+                const subject: string = 'Demande de réinitialisation du mot de passe'
+                const content: string = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
+                notifyNew(user.email, subject, content)
+                res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
+            } else { 
+                throw { code: 401 }
+            }
+        } catch (err) {
+            if (err.code === 400) res.status(409).send({ error: true, message: 'One or more mandatory data is missing' });
+            if (err.code === 401) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
         }
     }
 }

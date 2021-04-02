@@ -19,7 +19,7 @@ export default class Datahelpers {
     static checkBic(bic: string): boolean {
         return validator.isBic(bic);
     }
-    static checkIBan(iban: string): boolean {
-        return validator.isBic(iban);
+    static checkIban(iban: string): boolean {
+        return validator.isIban(iban);
     }
 }

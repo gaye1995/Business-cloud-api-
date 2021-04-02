@@ -44,15 +44,15 @@ export const BanqueJSON = (banque: BanqueInterface ): BanqueInterfaceJson => {
     iban: banque.iban,   
     bic: banque.bic,
     address: banque.address,
+    city: banque.city,
+    zip : banque.zip,
+    country: banque.country,
     createdAt: banque.createdAt,
     updatedAt: banque.updatedAt,
    
     };
     if (banque.phone) MoreOBanque.phone = banque.phone;
     if (banque.fax) banque.fax = banque.fax;
-    if (banque.address) MoreOBanque.address = banque.address;
-    if (banque.zip) MoreOBanque.zip = banque.zip;
-    if (banque.city) MoreOBanque.city = banque.city;
     if (banque.country) MoreOBanque.country = banque.country;
     if (banque.currency) MoreOBanque.currency = banque.currency;
     
