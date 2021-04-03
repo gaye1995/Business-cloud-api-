@@ -1,7 +1,11 @@
 import validator from 'validator';
-
+import IBAN from 'iban';
+import BIC from 'bic';
+import ibanConstructor from 'iban-constructor';
 
 export default class Datahelpers {
+
+  
     static checkEmail(email: string): boolean {
         return validator.isEmail(email);
     }
@@ -17,9 +21,9 @@ export default class Datahelpers {
         return validator.isDate(birthdayDate, { format: 'DD-MM-YYYY', strictMode: true, delimiters: ['-', '/', '.'] });
     }
     static checkBic(bic: string): boolean {
-        return validator.isBic(bic);
+        return BIC.isValid(bic);
     }
     static checkIban(iban: string): boolean {
-        return validator.isIban(iban);
+        return IBAN.isValid(iban);
     }
 }
