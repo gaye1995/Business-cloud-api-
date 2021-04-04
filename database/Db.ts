@@ -5,7 +5,7 @@ config();
 
 const MongoURL: string = process.env.MONGODB_URL as string;
 
-(async () => {
+export const db = (async () => {
       try {
         await mongoose.connect(MongoURL, {
           useNewUrlParser: true,

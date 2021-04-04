@@ -9,7 +9,7 @@ config();
 const JWT_KEY: string = process.env.JWT_KEY ;
 export const getToken = async (authHeader: any) =>{
     try{
-        return await authHeader.replace(/^Bearer/i, "").trim();   
+        return await authHeader.replace('Bearer ','').trim();   
     }catch
     {
         return false;
@@ -17,10 +17,11 @@ export const getToken = async (authHeader: any) =>{
 }
 export const getJwtPayload = async(token: string): Promise < any | null > => {
     try {
-        const jwtObject = jsonwebtoken.verify(token, JWT_KEY);
-        const user = await UserModel.findOne(jwtObject.email);
-        if (!user) throw new Error('Not authorized to access this resource');
-        return user;
+        const jwtObject = await jsonwebtoken.verify(token, JWT_KEY);
+        if (jwtObject) {
+            console.log(jwtObject);
+            return jwtObject;
+        }
     } catch (err) {}
     return null;
 };

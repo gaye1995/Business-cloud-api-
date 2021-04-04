@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
         type: Number,
     },
     lastLogin: {
-        type: Date,
-        default: new Date(),
+        type: Number,
+        default: Date.now(),
     },
     reset_password: {
         token: {
