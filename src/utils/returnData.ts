@@ -35,6 +35,7 @@ export const ClientJSON = (user: ClientInterface ): ClientInterfaceJson => {
     if (user.city) MoreOfUser.city = user.city;
     if (user.country) MoreOfUser.country = user.country;
     if (user.currency) MoreOfUser.currency = user.currency;
+ 
     return MoreOfUser;
 };
 export const BanqueJSON = (banque: BanqueInterface ): BanqueInterfaceJson => {
@@ -58,3 +59,17 @@ export const BanqueJSON = (banque: BanqueInterface ): BanqueInterfaceJson => {
     
     return MoreOBanque;
 };
+export const clientListe = (array : Array<ClientInterface>) =>{
+    array.map((maListe: any ) =>{
+        Object.assign(maListe,{_id:maListe._id});
+            delete maListe.email
+            delete maListe.token
+            delete maListe.refresh_token
+            delete maListe.isActive
+            delete maListe._id
+            delete maListe.password
+
+      })
+      if (array) return array;
+      else return [];
+}

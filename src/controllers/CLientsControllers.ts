@@ -1,16 +1,23 @@
 import { Request, Response } from 'express';
-import { comparePassword, hashPassword } from '../helpers/passwordhelpers';
-import Datahelpers from '../helpers/Datahelpers';
-import { UsersInterface } from '../interfaces/UsersInterface';
-import { UserModel } from '../models/UsersModel';
-import { notifyNew } from '../utils/mails';
+import { Bill } from '../models/BillModel';
+import { Client } from '../models/ClientModel';
+import { ClientJSON, clientListe } from '../utils/returnData';
 
-export class UserController {
+export class ClientController {
 
     static getCostomers = async (req: Request, res: Response) => {
         try {
-            const allUser: any = await UserModel.find({});
-            res.status(200).send({ error: true, user: allUser });
+            const allCustomers: any = await Client.find({});
+            const a: any = clientListe(allCustomers);
+            res.status(200).send({ error: true, Client: a });
+        } catch (err) {
+            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
+        }
+    }
+    static getBill = async (req: Request, res: Response) => {
+        try {
+            const allBill: any = await Bill.find({});
+            res.status(200).send({ error: true, Client: allBill });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
         }
