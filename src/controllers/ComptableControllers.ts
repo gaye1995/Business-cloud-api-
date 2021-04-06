@@ -8,7 +8,7 @@ import * as jwt from '../middlewares/checkJwt';
 import { updateUser } from '../helpers/checkFunction/editUser';
 import { UserJSON } from '../utils/returnData'
 
-export class UserController {
+export class ComptableController {
     static login = async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
@@ -71,15 +71,28 @@ export class UserController {
     }
     static updateUsers = async (req: Request, res: Response) => {
         try {
-            const  {data}: any  = req.body;
-            const user: any = await UserModel.findOne({ email: data.email });
-            await updateUser(user, { ...data });
+            const authorization: any = req.headers.authorization;
+            const token = await jwt.getToken(authorization);
+            const dataparams = await jwt.getJwtPayload(token);
+            const data: any  = req.body;
+            const subject : string = 'modification';
+            const content : string = 'vous venez de modifier certains de vos données sur le logiciel comptable Busines-Cloud';
+            const user: any = await UserModel.findOne({ email: dataparams.email });
+            if (data.password && !Datahelpers.checkPassword(dataparams.password)) throw {code: 403};
+            req.body.password = await hashPassword(dataparams.password);
+            if (data.phone && !Datahelpers.checkTel(data.phone)) throw {code: 404};
+            if (data.birthdayDate && !Datahelpers.checkDate(data.birthdayDate)) throw {code: 405};
+            await updateUser(user, data);
+            await notifyNew(dataparams.email, subject, content);
         } catch (err) {
+            if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
+            if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
+            if (err.code === 405) res.status(400).send({ error: true, message: 'incorect format date' });
         }
     }
     static forgetPassword = async (req: Request, res: Response) => {
         try {
-            const { email } = req.body;
+            const email = req.body;
             if (!email) throw {code: 400};
             const user: any = await UserModel.findOne({email: email});
             if (user) {
