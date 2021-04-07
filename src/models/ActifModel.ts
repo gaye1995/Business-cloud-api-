@@ -1,17 +1,27 @@
 import mongoose from 'mongoose';
 
 const actifSchema = new mongoose.Schema({
-    actifNum: {
-        type: String,
-        required: [true],
-    },
-    articleId: {
+    actifImmobilisee: [{
+        articleId: {
             type: mongoose.Schema.Types.ObjectId,
-    },
-    billId: {
-        type: mongoose.Schema.Types.ObjectId,
-    },
-    totalTTC: {
+        },
+        quantity: {
+            type: Number,
+        },
+        MontantTTC: {
+            type: Number,
+        },
+    }],
+    creance: [{
+        billId: {
+            type: mongoose.Schema.Types.ObjectId,
+        },
+    }],
+    disponibilite: [{
+        disponibilite: Number,
+    }],
+
+    totalActif: {
         type: Number,
     },
     actifDate: {

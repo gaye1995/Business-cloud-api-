@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const pactifSchema = new mongoose.Schema({
+const passifSchema = new mongoose.Schema({
     passifNum: {
         type: String,
         required: [true],
@@ -16,6 +16,6 @@ const pactifSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-const Pactif = mongoose.model('pactif', pactifSchema);
+const Passif = mongoose.model('passif', passifSchema);
 
-export { Pactif };
+export { Passif };
