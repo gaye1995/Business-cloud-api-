@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const actifSchema = new mongoose.Schema({
-    actifImmobilisee: [{
+    immobilisation: [{
         articleId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'article',

@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
+import { updateActif } from '../helpers/checkFunction/editBill';
 import Datahelpers from '../helpers/Datahelpers';
-import { ActifInterface } from '../interfaces/BilanInterface';
+import { ArticleInterface } from '../interfaces/ArticleInterface';
+import { ActifArticleInterface, ActifInterface } from '../interfaces/BilanInterface';
 import { Actif } from '../models/ActifModel';
+import { Article } from '../models/ArticleModel';
+import { Charge } from '../models/ChargeModel';
 import { UserExpense } from '../models/DepenseModel';
 import { Passif } from '../models/PassifModel';
 
@@ -38,8 +42,8 @@ export class CloctureController {
             req.body.expense = [];
             req.body.totalPassif = 0;
             console.log(req.body);
-            const actif : any = await Passif.create(req.body);    
-            res.status(200).send({ error: false, message: 'Passif Bilan created', actif: { expense: actif.expense, date: actif.totalPassif } });
+            const charge : any = await Charge.create(req.body);    
+            res.status(200).send({ error: false, message: 'Charge des compte de resultat  created', actif: { expense: charge.expense } });
         } catch (err) {
             if (err.code === 405) console.log('incorect format date' );
         }
@@ -55,4 +59,126 @@ export class CloctureController {
             if (err.code === 405) console.log('incorect format date' );
         }
     } 
+    static updateActif = async (req: Request, res: Response) => {
+        try {
+            // Récupération de toutes les données du body
+            const { id, articles} = req.body;
+            // console.log(articles);
+            // Vérification de si toutes les données nécessaire sont présentes
+            if (!id) throw new Error('Missing id field');
+
+            // Vérification de si la facture existe
+            const actif: any = await Actif.findOne({_id: id});
+            if (!actif) throw new Error('Invalid bill id');
+
+            const articleFind: any = await Article.findOne({ _id: articles});
+            console.log(articleFind);
+            if (!articleFind) throw new Error('Invalid article id');
+            // Création des données existante à modifier
+            const UpdateData: any = {};
+
+            if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
+           
+
+            // Modification de la facture
+            await updateActif(id, UpdateData);
+
+            // Envoi de la réponse
+            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+        } catch (err) {
+        
+        }
+    }
+    static updatePassif = async (req: Request, res: Response) => {
+        try {
+            // Récupération de toutes les données du body
+            const { id, articles} = req.body;
+            // console.log(articles);
+            // Vérification de si toutes les données nécessaire sont présentes
+            if (!id) throw new Error('Missing id field');
+
+            // Vérification de si la facture existe
+            const actif: any = await Actif.findOne({_id: id});
+            if (!actif) throw new Error('Invalid bill id');
+
+            const articleFind: any = await Article.findOne({ _id: articles});
+            console.log(articleFind);
+            if (!articleFind) throw new Error('Invalid article id');
+            // Création des données existante à modifier
+            const UpdateData: any = {};
+
+            if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
+           
+
+            // Modification de la facture
+            await updateActif(id, UpdateData);
+
+            // Envoi de la réponse
+            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+        } catch (err) {
+        
+        }
+    }
+    static updateCharge = async (req: Request, res: Response) => {
+        try {
+            // Récupération de toutes les données du body
+            const { id, expenses } = req.body;
+            // console.log(articles);
+            // Vérification de si toutes les données nécessaire sont présentes
+            if (!id) throw new Error('Missing id field');
+
+            // Vérification de si la facture existe
+            const actif: any = await Actif.findOne({_id: id});
+            if (!actif) throw new Error('Invalid bill id');
+
+            const expenseFind: any = await UserExpense.findOne({ _id: expenses});
+            console.log(expenseFind);
+            if (!expenseFind) throw new Error('Invalid article id');
+            // Création des données existante à modifier
+            const UpdateData: any = {};
+
+            if (expenseFind) UpdateData.immobilisation = actif.immobilisation = expenseFind;
+           
+
+            // Modification de la facture
+            await updateActif(id, UpdateData);
+
+            // Envoi de la réponse
+            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+        } catch (err) {
+        
+        }
+    }
+    static updateProduit = async (req: Request, res: Response) => {
+        try {
+            // Récupération de toutes les données du body
+            const { id, articles} = req.body;
+            // console.log(articles);
+            // Vérification de si toutes les données nécessaire sont présentes
+            if (!id) throw new Error('Missing id field');
+
+            // Vérification de si la facture existe
+            const actif: any = await Actif.findOne({_id: id});
+            if (!actif) throw new Error('Invalid bill id');
+
+            const articleFind: any = await Article.findOne({ _id: articles});
+            console.log(articleFind);
+            if (!articleFind) throw new Error('Invalid article id');
+            // Création des données existante à modifier
+            const UpdateData: any = {};
+
+            if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
+           
+
+            // Modification de la facture
+            await updateActif(id, UpdateData);
+
+            // Envoi de la réponse
+            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+        } catch (err) {
+        
+        }
+    }
+
+
 }

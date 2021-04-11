@@ -10,10 +10,18 @@ export interface ActifInterface {
     actifDateFin?: Date;
 
 }
+export interface EditActif{
+    immobilisation?: ActifArticleInterface[];
+    creance?:  ActifBillInterface[];
+    disponibilite?: ActifBanqueInterface[];
+    totalActif?: number;
+    actifDateDebut?: Date;
+    actifDateFin?: Date;
+
+}
 export interface ActifArticleInterface {
     articleId: string;
     quantity: number;
-    montantTTC : number;
 }
 export interface ActifBillInterface {
     billId: string;
@@ -32,4 +40,16 @@ export interface PassifInterface {
 export interface PassifExpenseInterface {
     userExpenseNum:  mongoose.Schema.Types.ObjectId;
     total: number;
+}
+export interface ChargeInterface {
+    _id: string;
+    expense:  PassifExpenseInterface[];
+    totalPassif: number;
+}
+export interface ProduitInterface {
+    _id: string;
+    articleId: mongoose.Schema.Types.ObjectId,
+    totalPassif: number;
+    passifDateDebut: Date;
+    passifDateFin: Date;
 }
