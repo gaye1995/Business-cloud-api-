@@ -20,6 +20,7 @@ const billSchema = new mongoose.Schema({
     articles: [{
         articleId: {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'article',
         },
         quantity: {
             type: Number,

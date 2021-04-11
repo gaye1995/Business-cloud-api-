@@ -4,6 +4,7 @@ const actifSchema = new mongoose.Schema({
     actifImmobilisee: [{
         articleId: {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'article',
         },
         quantity: {
             type: Number,

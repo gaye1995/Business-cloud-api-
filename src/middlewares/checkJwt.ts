@@ -19,7 +19,6 @@ export const getJwtPayload = async(token: string): Promise < any | null > => {
     try {
         const jwtObject = await jsonwebtoken.verify(token, JWT_KEY);
         if (jwtObject) {
-            console.log(jwtObject);
             return jwtObject;
         }
     } catch (err) {}

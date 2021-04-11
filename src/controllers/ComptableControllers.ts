@@ -12,10 +12,8 @@ export class ComptableController {
     static login = async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
-            console.log(email);
             if (!email || !password) throw { code: 400 };
             let User: any = await UserModel.findOne({email : email});
-            console.log(User);
             // email doesn't existe 
             if (!User) throw { code: 402 }
             if(!await comparePassword(password, User.password)) throw { code: 404}
@@ -36,8 +34,6 @@ export class ComptableController {
             if (!name || !email || !password) throw {code: 400};
             if (!Datahelpers.checkEmail(email)) throw {code: 401};
             const User: any = await UserModel.findOne({email : email});
-            console.log(email);
-            console.log(password);
             // email existe 
             if (User) throw {code: 402}
             if (!Datahelpers.checkPassword(password)) throw {code: 403};
@@ -71,6 +67,8 @@ export class ComptableController {
     }
     static updateUsers = async (req: Request, res: Response) => {
         try {
+            const id :any = req.params;
+console.log(id);
             const authorization: any = req.headers.authorization;
             const token = await jwt.getToken(authorization);
             const dataparams = await jwt.getJwtPayload(token);

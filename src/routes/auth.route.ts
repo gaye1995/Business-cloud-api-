@@ -14,4 +14,5 @@ route.get('/auth/create-bilan/actif', [authMiddleware], CloctureController.creat
 route.get('/auth/create-bilan/passif', [authMiddleware], CloctureController.createBilanPassif)
 
 
+
 export { route as RouterUser };
