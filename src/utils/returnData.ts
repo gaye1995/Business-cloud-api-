@@ -5,6 +5,7 @@ export const UserJSON = (user: UsersInterface ): UsersInterfaceJson => {
     const MoreOfUser: UsersInterfaceJson = {
         name: user.name,
         email: user.email,
+        role : user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         token: user.token ,

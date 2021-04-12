@@ -63,7 +63,8 @@ export class CloctureController {
         try {
             // Récupération de toutes les données du body
             const { id, immobilisation} = req.body;
-            console.log(immobilisation);
+            console.log('rr');
+            console.log(id);
             if (!id) throw new Error('Missing id field');
 
             // recherche de l'actif
@@ -72,7 +73,7 @@ export class CloctureController {
             if (immobilisation) {
                 immobilisation.map(async (article: ActifArticleInterface) => {
                     if (!article.articleId || !article.quantity) throw new Error('Invalid article format');
-                    const articleFind = await Actif.findOne({_id: article.articleId});
+                    const articleFind: any = await Article.findOne({_id: article.articleId});
                     console.log(articleFind);
                     if (!articleFind) throw new Error('Invalid article id');
                 });

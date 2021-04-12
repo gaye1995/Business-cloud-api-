@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const actifSchema = new mongoose.Schema({
     immobilisation: [{
+        _id: false,
         articleId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'article',

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { comparePassword, hashPassword } from '../helpers/passwordhelpers';
 import Datahelpers from '../helpers/Datahelpers';
 import { UsersInterface } from '../interfaces/UsersInterface';
@@ -19,6 +20,7 @@ export class ComptableController {
             if(!await comparePassword(password, User.password)) throw { code: 404}
             User = await jwt.getAuthToken(User);
             const dataUser: any = UserJSON(User);
+
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'The user has been successfully connected', user: dataUser });
         } catch (err) {
@@ -30,7 +32,8 @@ export class ComptableController {
 
     static register = async (req: Request, res: Response) => {
         try {
-            const { name, email, password, phone, birthdayDate, numSIRET, numRCS } = req.body;
+            const { name, email, password, role,  phone, birthdayDate, numSIRET, numRCS } = req.body;
+            console.log(role);
             if (!name || !email || !password) throw {code: 400};
             if (!Datahelpers.checkEmail(email)) throw {code: 401};
             const User: any = await UserModel.findOne({email : email});
@@ -59,7 +62,7 @@ export class ComptableController {
     } 
     static getUsers = async (req: Request, res: Response) => {
         try {
-            const allUser : any = await UserModel.find({});
+            const allUser : any = await UserModel.find({role: "comptable"});
             res.status(200).send({error: true, user: allUser });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
@@ -113,12 +116,14 @@ console.log(id);
         const token = await jwt.getToken(authorization);
         const dataparams = await jwt.getJwtPayload(token);
         const user: any = await UserModel.findOne({ email: dataparams.email });
-        const deconnectCount = await UserModel.deleteOne({ token: user.token });
+        const deconnectCount = await UserModel.updateOne({ _id: mongoose.Types.ObjectId(user._id), email : user.email } ,{  $unset: {token : ""} });
+        console.log(user);
+        // const deconnectCount = await UserModel.deleteOne({ token: user.token });
         if(!deconnectCount){
-            res.status(403).send({ error: false, message: 'an email has been sent to your email address' });
+            res.status(403).send({ error: false, message: 'Echec de la déconnection' });
 
         }else{
-            res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
+            res.status(200).send({ error: false, message: 'Vous avez été déconnecter avec succés' });
         }
     }catch(err){
         return err.console.error();

@@ -2,6 +2,7 @@ export interface UsersInterface {
         _id: string;
         name: string;
         email: string;
+        role: string;
         phone?: string;
         birthdayDate?: string;
         avatar?: string;
@@ -20,6 +21,7 @@ export interface UsersInterface {
 export interface UsersInterfaceJson {
         name: string;
         email: string;
+        role: string;
         phone?: string;
         birthdayDate?: string;
         avatar?: string;
