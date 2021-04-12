@@ -1,10 +1,10 @@
 
 import mongoose from 'mongoose';
-import { UserModel } from '../../models/UsersModel';
 import { config } from 'dotenv';
 import { BillInterface, EditBill } from '../../interfaces/BillInterface';
 import { Bill } from '../../models/BillModel';
 import { ActifInterface, EditActif } from '../../interfaces/BilanInterface';
+import { Actif } from '../../models/ActifModel';
 
 config();
 
@@ -13,5 +13,5 @@ export const updateBill = async (bill: BillInterface, updateAllData: EditActif):
 };
 
 export const updateActif = async (actif: ActifInterface, updateAllData: ActifInterface): Promise<void> => {
-     await Bill.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $set: updateAllData });
-};
+     await Actif.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $push: { immobilisation : updateAllData} });
+};  

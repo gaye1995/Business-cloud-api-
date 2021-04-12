@@ -1,9 +1,18 @@
 import mongoose from 'mongoose';
 
 const chargeSchema = new mongoose.Schema({
-    userExpenseNum: {
-        type: mongoose.Schema.Types.ObjectId,
-    },
+    exceptionnel: [{
+        userExpenseNum: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'article',
+        },
+        quantity: {
+            type: Number,
+        },
+        MontantTTC: {
+            type: Number,
+        },
+    }],
     totalTTC: {
         type: Number,
     },

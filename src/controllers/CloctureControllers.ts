@@ -76,17 +76,19 @@ export class CloctureController {
             if (!articleFind) throw new Error('Invalid article id');
             // Création des données existante à modifier
             const UpdateData: any = {};
-
+            if(actif.immobilisation == articleFind) throw { code : 401}
             if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
-           
 
-            // Modification de la facture
-            await updateActif(id, UpdateData);
+            await  actif.updateOne ( 
+                {  id  :  id }, 
+                { $push:  {  immobilisation :  UpdateData  }  }); 
+            // insertion dans l'actif
+            // await updateActif(id, UpdateData);
 
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
         } catch (err) {
-        
+        if (err.code === 401 ) res.status(401).send({ error : true , message : 'cette article existe déja dans les actifs'});
         }
     }
     static updatePassif = async (req: Request, res: Response) => {
@@ -128,8 +130,8 @@ export class CloctureController {
             if (!id) throw new Error('Missing id field');
 
             // Vérification de si la facture existe
-            const actif: any = await Actif.findOne({_id: id});
-            if (!actif) throw new Error('Invalid bill id');
+            const charge: any = await Charge.findOne({_id: id});
+            if (!charge) throw new Error('Invalid bill id');
 
             const expenseFind: any = await UserExpense.findOne({ _id: expenses});
             console.log(expenseFind);
@@ -137,14 +139,14 @@ export class CloctureController {
             // Création des données existante à modifier
             const UpdateData: any = {};
 
-            if (expenseFind) UpdateData.immobilisation = actif.immobilisation = expenseFind;
+            if (expenseFind) UpdateData.exceptionnel = charge.exceptionnel = expenseFind;
            
-
+           
             // Modification de la facture
-            await updateActif(id, UpdateData);
+            // await updateActif(id, UpdateData);
 
             // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+            res.status(200).send({ error: false, message: 'actif successfully updated',actif : charge});
         } catch (err) {
         
         }
