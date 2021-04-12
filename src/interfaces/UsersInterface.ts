@@ -25,14 +25,10 @@ export interface UsersInterfaceJson {
         phone?: string;
         birthdayDate?: string;
         avatar?: string;
-        createdAt: Date;
-        updatedAt: Date;
         address?: string;
         zip?: string;
         city?: string;
         country?: string;
-        currency?: string;
-        token?: string;
 }
 export interface ClientInterface {
     _id: string;
@@ -70,8 +66,6 @@ export interface ClientInterfaceJson {
     createdAt: Date;
     updatedAt: Date;
     post?: string;
-    currency?: string;
-    token: string;
 }
     
 export interface EditUser {

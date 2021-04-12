@@ -1,3 +1,4 @@
+import { ArticleInterface, ArticleInterfaceJson } from "../interfaces/ArticleInterface";
 import { BanqueInterface, BanqueInterfaceJson } from "../interfaces/BanqueInterface";
 import { UsersInterface, UsersInterfaceJson, ClientInterfaceJson, ClientInterface} from "../interfaces/UsersInterface";
 
@@ -6,9 +7,6 @@ export const UserJSON = (user: UsersInterface ): UsersInterfaceJson => {
         name: user.name,
         email: user.email,
         role : user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        token: user.token ,
     };
     if (user.birthdayDate) MoreOfUser.birthdayDate = user.birthdayDate;
     if (user.phone) MoreOfUser.phone = user.phone;
@@ -17,7 +15,6 @@ export const UserJSON = (user: UsersInterface ): UsersInterfaceJson => {
     if (user.zip) MoreOfUser.zip = user.zip;
     if (user.city) MoreOfUser.city = user.city;
     if (user.country) MoreOfUser.country = user.country;
-    if (user.currency) MoreOfUser.currency = user.currency;
     return MoreOfUser;
 };
 export const ClientJSON = (user: ClientInterface ): ClientInterfaceJson => {
@@ -26,7 +23,6 @@ export const ClientJSON = (user: ClientInterface ): ClientInterfaceJson => {
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-        token: user.token ,
     };
     if (user.birthdayDate) MoreOfUser.birthdayDate = user.birthdayDate;
     if (user.phone) MoreOfUser.phone = user.phone;
@@ -35,7 +31,6 @@ export const ClientJSON = (user: ClientInterface ): ClientInterfaceJson => {
     if (user.zip) MoreOfUser.zip = user.zip;
     if (user.city) MoreOfUser.city = user.city;
     if (user.country) MoreOfUser.country = user.country;
-    if (user.currency) MoreOfUser.currency = user.currency;
  
     return MoreOfUser;
 };
@@ -74,3 +69,10 @@ export const clientListe = (array : Array<ClientInterface>) =>{
       if (array) return array;
       else return [];
 }
+export const ArticleJSON = (article: ArticleInterface ): ArticleInterfaceJson => {
+    const MoreOfUser: ArticleInterfaceJson = {
+        name: article.name,
+    };
+ 
+    return MoreOfUser;
+};

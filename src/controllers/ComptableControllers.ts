@@ -22,7 +22,7 @@ export class ComptableController {
             const dataUser: any = UserJSON(User);
 
             // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'The user has been successfully connected', user: dataUser });
+            res.status(200).send({ error: false, message: 'The user has been successfully connected', user: dataUser ,token : User.token});
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
             if (err.code === 402) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });

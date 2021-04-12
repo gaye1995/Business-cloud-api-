@@ -13,5 +13,5 @@ export const updateBill = async (bill: BillInterface, updateAllData: EditActif):
 };
 
 export const updateActif = async (actif: ActifInterface, updateAllData: ActifInterface): Promise<void> => {
-     await Actif.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $set : updateAllData});
+     await Actif.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $set  : updateAllData});
 };  

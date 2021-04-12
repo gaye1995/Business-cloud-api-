@@ -28,8 +28,9 @@ middlewareAuth.use(async (req: Request, res: Response, next: NextFunction) => {
         // Si tout se passe bien suite de la requête
         next();
     } catch (erreur) {
-        if (erreur.code === 400 ) res.status(400).send({ error: true, message: 'err.message '});
-        if (erreur.code === 401) res.status(400).send({ error: true, message: 'err.message jwt expire '});
+        if (erreur.code === 400 ) res.status(400).send({ error: true, message: 'vous devez avoir un token valide'});
+        if (erreur.code === 401) res.status(400).send({ error: true, message: 'votre token a expiré '});
+        else res.status(500).send({ error: true, message: 'votre mettre un token '});
     }
 });
 

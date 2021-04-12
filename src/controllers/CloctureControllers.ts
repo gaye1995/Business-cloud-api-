@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { updateActif } from '../helpers/checkFunction/editBill';
 import Datahelpers from '../helpers/Datahelpers';
 import { ArticleInterface } from '../interfaces/ArticleInterface';
@@ -8,6 +9,7 @@ import { Article } from '../models/ArticleModel';
 import { Charge } from '../models/ChargeModel';
 import { UserExpense } from '../models/DepenseModel';
 import { Passif } from '../models/PassifModel';
+import { ArticleJSON } from '../utils/returnData';
 
 export class CloctureController {
     static createBilanActif = async (req: Request, res: Response) => {
@@ -63,8 +65,6 @@ export class CloctureController {
         try {
             // Récupération de toutes les données du body
             const { id, immobilisation} = req.body;
-            console.log('rr');
-            console.log(id);
             if (!id) throw new Error('Missing id field');
 
             // recherche de l'actif
@@ -73,25 +73,18 @@ export class CloctureController {
             if (immobilisation) {
                 immobilisation.map(async (article: ActifArticleInterface) => {
                     if (!article.articleId || !article.quantity) throw new Error('Invalid article format');
-                    const articleFind: any = await Article.findOne({_id: article.articleId});
-                    console.log(articleFind);
+                    const articleFind: any = await Article.findOne({_id: mongoose.Types.ObjectId(article.articleId)});
                     if (!articleFind) throw new Error('Invalid article id');
                 });
             }
-            console.log(immobilisation);
-            // const articleFind: any = await Article.findOne({ _id: articles});
-            // console.log(articleFind);
-            // if (!articleFind) throw new Error('Invalid article id');
-            // // Création des données existante à modifier
             const UpdateData: any = {};
             // if(actif.immobilisation == articleFind) throw { code : 401}
             if (immobilisation) UpdateData.immobilisation = actif.immobilisation = immobilisation;
-        
             // insertion dans l'actif
-            await updateActif(id, UpdateData);
-
+            await updateActif(actif, UpdateData);
+            const populateActif : any = await Actif.findOne({ _id: actif._id }).populate('immobilisation.articleId');
             // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+            res.status(200).send({ error: false, message: 'actif successfully updated',actif : populateActif});
         } catch (err) {
         if (err.code === 401 ) res.status(401).send({ error : true , message : 'cette article existe déja dans les actifs'});
         }

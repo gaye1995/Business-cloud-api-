@@ -5,4 +5,6 @@ export interface ArticleInterface {
     accountNumber: number;
     tva?: number;
     description?: string;
+}export interface ArticleInterfaceJson {
+    name: string;
 }
