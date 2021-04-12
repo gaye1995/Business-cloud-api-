@@ -106,5 +106,25 @@ console.log(id);
             if (err.code === 401) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
         }
     }
+    //deconnexion
+    static deconnectUser = async (req: Request, res: Response) => {
+    try{ 
+        const authorization: any = req.headers.authorization;
+        const token = await jwt.getToken(authorization);
+        const dataparams = await jwt.getJwtPayload(token);
+        const user: any = await UserModel.findOne({ email: dataparams.email });
+        const deconnectCount = await UserModel.deleteOne({ token: user.token });
+        if(!deconnectCount){
+            res.status(403).send({ error: false, message: 'an email has been sent to your email address' });
+
+        }else{
+            res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
+        }
+    }catch(err){
+        return err.console.error();
+        
+    }
+      
+} 
 }
 

@@ -62,28 +62,32 @@ export class CloctureController {
     static updateActif = async (req: Request, res: Response) => {
         try {
             // Récupération de toutes les données du body
-            const { id, articles} = req.body;
-            // console.log(articles);
-            // Vérification de si toutes les données nécessaire sont présentes
+            const { id, immobilisation} = req.body;
+            console.log(immobilisation);
             if (!id) throw new Error('Missing id field');
 
-            // Vérification de si la facture existe
+            // recherche de l'actif
             const actif: any = await Actif.findOne({_id: id});
             if (!actif) throw new Error('Invalid bill id');
-
-            const articleFind: any = await Article.findOne({ _id: articles});
-            console.log(articleFind);
-            if (!articleFind) throw new Error('Invalid article id');
-            // Création des données existante à modifier
+            if (immobilisation) {
+                immobilisation.map(async (article: ActifArticleInterface) => {
+                    if (!article.articleId || !article.quantity) throw new Error('Invalid article format');
+                    const articleFind = await Actif.findOne({_id: article.articleId});
+                    console.log(articleFind);
+                    if (!articleFind) throw new Error('Invalid article id');
+                });
+            }
+            console.log(immobilisation);
+            // const articleFind: any = await Article.findOne({ _id: articles});
+            // console.log(articleFind);
+            // if (!articleFind) throw new Error('Invalid article id');
+            // // Création des données existante à modifier
             const UpdateData: any = {};
-            if(actif.immobilisation == articleFind) throw { code : 401}
-            if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
-
-            await  actif.updateOne ( 
-                {  id  :  id }, 
-                { $push:  {  immobilisation :  UpdateData  }  }); 
+            // if(actif.immobilisation == articleFind) throw { code : 401}
+            if (immobilisation) UpdateData.immobilisation = actif.immobilisation = immobilisation;
+        
             // insertion dans l'actif
-            // await updateActif(id, UpdateData);
+            await updateActif(id, UpdateData);
 
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
@@ -91,96 +95,96 @@ export class CloctureController {
         if (err.code === 401 ) res.status(401).send({ error : true , message : 'cette article existe déja dans les actifs'});
         }
     }
-    static updatePassif = async (req: Request, res: Response) => {
-        try {
-            // Récupération de toutes les données du body
-            const { id, articles} = req.body;
-            // console.log(articles);
-            // Vérification de si toutes les données nécessaire sont présentes
-            if (!id) throw new Error('Missing id field');
+    // static updatePassif = async (req: Request, res: Response) => {
+    //     try {
+    //         // Récupération de toutes les données du body
+    //         const { id, articles} = req.body;
+    //         // console.log(articles);
+    //         // Vérification de si toutes les données nécessaire sont présentes
+    //         if (!id) throw new Error('Missing id field');
 
-            // Vérification de si la facture existe
-            const actif: any = await Actif.findOne({_id: id});
-            if (!actif) throw new Error('Invalid bill id');
+    //         // Vérification de si la facture existe
+    //         const actif: any = await Actif.findOne({_id: id});
+    //         if (!actif) throw new Error('Invalid bill id');
 
-            const articleFind: any = await Article.findOne({ _id: articles});
-            console.log(articleFind);
-            if (!articleFind) throw new Error('Invalid article id');
-            // Création des données existante à modifier
-            const UpdateData: any = {};
+    //         const articleFind: any = await Article.findOne({ _id: articles});
+    //         console.log(articleFind);
+    //         if (!articleFind) throw new Error('Invalid article id');
+    //         // Création des données existante à modifier
+    //         const UpdateData: any = {};
 
-            if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
+    //         if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
            
 
-            // Modification de la facture
-            await updateActif(id, UpdateData);
+    //         // Modification de la facture
+    //         await updateActif(id, UpdateData);
 
-            // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
-        } catch (err) {
+    //         // Envoi de la réponse
+    //         res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+    //     } catch (err) {
         
-        }
-    }
-    static updateCharge = async (req: Request, res: Response) => {
-        try {
-            // Récupération de toutes les données du body
-            const { id, expenses } = req.body;
-            // console.log(articles);
-            // Vérification de si toutes les données nécessaire sont présentes
-            if (!id) throw new Error('Missing id field');
+    //     }
+    // }
+    // static updateCharge = async (req: Request, res: Response) => {
+    //     try {
+    //         // Récupération de toutes les données du body
+    //         const { id, expenses } = req.body;
+    //         // console.log(articles);
+    //         // Vérification de si toutes les données nécessaire sont présentes
+    //         if (!id) throw new Error('Missing id field');
 
-            // Vérification de si la facture existe
-            const charge: any = await Charge.findOne({_id: id});
-            if (!charge) throw new Error('Invalid bill id');
+    //         // Vérification de si la facture existe
+    //         const charge: any = await Charge.findOne({_id: id});
+    //         if (!charge) throw new Error('Invalid bill id');
 
-            const expenseFind: any = await UserExpense.findOne({ _id: expenses});
-            console.log(expenseFind);
-            if (!expenseFind) throw new Error('Invalid article id');
-            // Création des données existante à modifier
-            const UpdateData: any = {};
+    //         const expenseFind: any = await UserExpense.findOne({ _id: expenses});
+    //         console.log(expenseFind);
+    //         if (!expenseFind) throw new Error('Invalid article id');
+    //         // Création des données existante à modifier
+    //         const UpdateData: any = {};
 
-            if (expenseFind) UpdateData.exceptionnel = charge.exceptionnel = expenseFind;
+    //         if (expenseFind) UpdateData.exceptionnel = charge.exceptionnel = expenseFind;
            
            
-            // Modification de la facture
-            // await updateActif(id, UpdateData);
+    //         // Modification de la facture
+    //         // await updateActif(id, UpdateData);
 
-            // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'actif successfully updated',actif : charge});
-        } catch (err) {
+    //         // Envoi de la réponse
+    //         res.status(200).send({ error: false, message: 'actif successfully updated',actif : charge});
+    //     } catch (err) {
         
-        }
-    }
-    static updateProduit = async (req: Request, res: Response) => {
-        try {
-            // Récupération de toutes les données du body
-            const { id, articles} = req.body;
-            // console.log(articles);
-            // Vérification de si toutes les données nécessaire sont présentes
-            if (!id) throw new Error('Missing id field');
+    //     }
+    // }
+    // static updateProduit = async (req: Request, res: Response) => {
+    //     try {
+    //         // Récupération de toutes les données du body
+    //         const { id, articles} = req.body;
+    //         // console.log(articles);
+    //         // Vérification de si toutes les données nécessaire sont présentes
+    //         if (!id) throw new Error('Missing id field');
 
-            // Vérification de si la facture existe
-            const actif: any = await Actif.findOne({_id: id});
-            if (!actif) throw new Error('Invalid bill id');
+    //         // Vérification de si la facture existe
+    //         const actif: any = await Actif.findOne({_id: id});
+    //         if (!actif) throw new Error('Invalid bill id');
 
-            const articleFind: any = await Article.findOne({ _id: articles});
-            console.log(articleFind);
-            if (!articleFind) throw new Error('Invalid article id');
-            // Création des données existante à modifier
-            const UpdateData: any = {};
+    //         const articleFind: any = await Article.findOne({ _id: articles});
+    //         console.log(articleFind);
+    //         if (!articleFind) throw new Error('Invalid article id');
+    //         // Création des données existante à modifier
+    //         const UpdateData: any = {};
 
-            if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
+    //         if (articleFind) UpdateData.immobilisation = actif.immobilisation = articleFind;
            
 
-            // Modification de la facture
-            await updateActif(id, UpdateData);
+    //         // Modification de la facture
+    //         await updateActif(id, UpdateData);
 
-            // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
-        } catch (err) {
+    //         // Envoi de la réponse
+    //         res.status(200).send({ error: false, message: 'actif successfully updated',actif : actif});
+    //     } catch (err) {
         
-        }
-    }
+    //     }
+    // }
 
 
 }

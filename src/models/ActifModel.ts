@@ -9,9 +9,6 @@ const actifSchema = new mongoose.Schema({
         quantity: {
             type: Number,
         },
-        MontantTTC: {
-            type: Number,
-        },
     }],
     creance: [{
         billId: {

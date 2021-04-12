@@ -3,7 +3,6 @@ config();
 require('./database/Db');
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 import { AllRoute } from './src/routes';
 import bodyParser from 'body-parser';
 
@@ -26,14 +25,6 @@ app.use((error: any, request: Request, response: Response, next: NextFunction) =
     }
     return next();
 });
-
-const limiter: rateLimit.RateLimit = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
-});
-
-app.use(limiter);
-
 app.use(AllRoute);
 
 app.listen(port, () => {
