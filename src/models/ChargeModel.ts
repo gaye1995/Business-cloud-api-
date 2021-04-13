@@ -6,9 +6,6 @@ const chargeSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'article',
         },
-        quantity: {
-            type: Number,
-        },
         MontantTTC: {
             type: Number,
         },

@@ -12,8 +12,10 @@ const actifSchema = new mongoose.Schema({
         },
     }],
     creance: [{
+        _id: false,
         billId: {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'bill',
         },
     }],
     disponibilite: [{

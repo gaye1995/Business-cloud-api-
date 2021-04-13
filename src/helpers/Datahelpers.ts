@@ -2,6 +2,7 @@ import validator from 'validator';
 import IBAN from 'iban';
 import BIC from 'bic';
 import ibanConstructor from 'iban-constructor';
+import { Request, Response } from 'express';
 
 export default class Datahelpers {
 
@@ -26,4 +27,13 @@ export default class Datahelpers {
     static checkIban(iban: string): boolean {
         return IBAN.isValid(iban);
     }
+    /**
+ * Fontion d'envoi des erreurs non géré par l'api
+ * @param res Réponse express
+ * @param err Message d'erreur
+ */
+    static errorHandler = (res: Response, err: any) => {
+    console.log(err);
+    res.status(500).send({ error: true, message: 'Unexpected error', err });
+};
 }
