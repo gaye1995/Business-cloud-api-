@@ -31,6 +31,8 @@ export class CloctureController {
             res.status(200).send({ error: false, message: 'Actif Bilan created', actif: { immobilisation: actif.immobilisation, date: actif.actifDate ,disponibilite : actif.disponibilite } });
         } catch (err) {
             if (err.code === 405) console.log('incorect format date' );
+            else Datahelpers.errorHandler(res, err);
+
         }
     }
 
@@ -63,7 +65,7 @@ export class CloctureController {
             //verification du format de la date
             if (!chargeDate && !Datahelpers.checkDate(chargeDate)) throw {code: 405};
             // initialisation des données
-            req.body.expense = [];
+            req.body.explotatation = [];
             req.body.totalPassif = 0;
             console.log(req.body);
             // création des données
@@ -99,7 +101,6 @@ export class CloctureController {
             // Récupération de toutes les données du body
             const { id, immobilisation , creance } = req.body;
             if (!id) throw { code:400 } ;
-
             // recherche de l'actif
             const actif: any = await Actif.findOne({ _id: id });
             if (!actif) throw { code : 401 };
@@ -111,6 +112,7 @@ export class CloctureController {
             if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
             if (err.code === 401) res.status(401).send({ error: true, message: 'L\'actif que vous avez indiquez est inexistant ' });
             if (err.code === 402) res.status(401).send({ error: true, message: 'Une ou plusieurs article n\'existe pas ' });
+            else Datahelpers.errorHandler(res, err);
 
         }
     }
@@ -137,19 +139,20 @@ export class CloctureController {
     static updateCharge = async (req: Request, res: Response) => {
         try {
             // Récupération de toutes les données du body
-            const { id, expenses } = req.body;
-
+            const { id, exploitation } = req.body;
             // Vérification de si toutes les données nécessaire sont présentes
-            if (!id) throw new Error('Missing id field');
+            if (!id) throw {code : 400};
 
             // Vérification de si la facture existe
             const charge: any = await Charge.findOne({_id: id});
-            if (!charge) throw new Error('Invalid bill id');
-            const expensesP : any = await insertChargeOfExpense(charge, expenses);
+            if (!charge) throw {code : 401};
+            const expensesP : any = await insertChargeOfExpense(charge, exploitation);
             // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'actif successfully updated',actif : charge});
+            res.status(200).send({ error: false, message: 'charge successfully updated',charge : expensesP});
         } catch (err) {
-        
+            if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
+            if (err.code === 401) res.status(401).send({ error: true, message: 'Le charge que vous avez indiquez est inexistant ' });
+            else Datahelpers.errorHandler(res, err);
         }
     }
     // static updateProduit = async (req: Request, res: Response) => {

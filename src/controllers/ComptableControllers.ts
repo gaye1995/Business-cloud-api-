@@ -68,10 +68,20 @@ export class ComptableController {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
         }
     }
+    // recuperation d'un comptable (user)
+    static getOneUser = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const USER: any = await UserModel.findOne({_id : id});
+            const user: any = UserJSON(USER);
+            res.status(200).send({ error: false, user: user });
+        } catch (err) {
+            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
+        }
+    }
     static updateUsers = async (req: Request, res: Response) => {
         try {
             const id :any = req.params;
-console.log(id);
             const authorization: any = req.headers.authorization;
             const token = await jwt.getToken(authorization);
             const dataparams = await jwt.getJwtPayload(token);

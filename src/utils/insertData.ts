@@ -1,14 +1,15 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import { config } from 'dotenv';
-import { ActifArticleInterface, ActifBillInterface, ActifInterface } from "../interfaces/BilanInterface";
+import { ActifArticleInterface, ActifBillInterface, ActifInterface, PassifExpenseInterface } from "../interfaces/BilanInterface";
 import { Actif } from "../models/ActifModel";
 import { ArticleInterface } from '../interfaces/ArticleInterface';
 import { BillInterface } from '../interfaces/BillInterface';
 import { Bill } from '../models/BillModel';
-import { updateActif, updatePassif } from '../helpers/checkFunction/editBill';
+import { updateActif, updateCharge, updatePassif } from '../helpers/checkFunction/editBill';
 import { Article } from '../models/ArticleModel';
 import { Charge } from '../models/ChargeModel';
+import { UserExpense } from '../models/DepenseModel';
 config();
 
 export const insertActifOfCreance = async (actif:any,creance: any )=>  {
@@ -65,23 +66,22 @@ export const insertPassifOfExpense = async (passif: any, immobilisation: any )=>
     return populateActifImmo;
 
 }
-export const insertChargeOfExpense = async (passif: any, explotatation: any )=>  {
-    if (explotatation) {
-        explotatation.map(async (article: ActifArticleInterface) => {
-            if (!article.articleId || !article.quantity) throw new Error('Invalid article format');
-            const articleFind: any = await Article.findOne({ _id: mongoose.Types.ObjectId(article.articleId) });
-            if (!articleFind) throw { code: 402 };
+export const insertChargeOfExpense = async (charge: any, exploitation: any )=>  {
+    if (exploitation) {
+        exploitation.map(async (expense: PassifExpenseInterface) => {
+            if (!expense.userExpenseNum) throw new Error('Invalid article format');
+            const expenceFind: any = await UserExpense.findOne({ _id: mongoose.Types.ObjectId(expense.userExpenseNum) });
+            if (!expenceFind) throw { code: 402 };
         });
     }
-    const UpdateDataexplotatation: any = {};
-    if (explotatation) UpdateDataexplotatation.explotatation = passif.explotatation = explotatation;
-    // insertion des immos dans l'actif
-    await updatePassif(passif, UpdateDataexplotatation);
-    // recupération de la totalité des données de l'article
-    const populateActifImmo: any = await Charge.findOne({ _id: passif._id }).populate('explotatation.articleId');
+    const UpdateDataExplotatation: any = {};
+    if (exploitation) UpdateDataExplotatation.exploitation = charge.exploitation = exploitation;
+    // insertion des depense dans le charge du compte de resultat
+    await updateCharge(charge, UpdateDataExplotatation);
+    // recupération de la totalité des données des expenses
+    const populateChargeExpense: any = await Charge.findOne({ _id: charge._id }).populate('explotatation.userExpenseNum');
     // Envoi de la réponse
-    return populateActifImmo;
-
+    return populateChargeExpense;
 }   
             
 

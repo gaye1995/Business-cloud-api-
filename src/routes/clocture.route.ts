@@ -8,7 +8,7 @@ route.post('/bilan/create-bilan/actif', [authMiddleware], CloctureController.cre
 route.post('/bilan/create-bilan/passif', [authMiddleware], CloctureController.createBilanPassif)
 route.put('/bilan/create-bilan/actif', [authMiddleware], CloctureController.updateActif)
 route.post('/compteRs/create-compteRs/charge', [authMiddleware], CloctureController.createCharge)
-// route.put('/compteRs/create-compteRs/charge', [authMiddleware], CloctureController.updateCharge)
+route.put('/compteRs/create-compteRs/charge', [authMiddleware], CloctureController.updateCharge)
 
 
 export { route as RouterClocture};

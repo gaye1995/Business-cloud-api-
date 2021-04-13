@@ -11,5 +11,7 @@ route.get('/client/facture/all', [authMiddleware],  BillController.getBill)
 route.get('/client/facture/:id', [authMiddleware],  BillController.getOneBill)
 route.put('/client/facture/:id', [authMiddleware],  BillController.updateBill)
 route.delete('/client/facture/:id', [authMiddleware],  BillController.deleteBill)
+route.get('/client/expense/:id', [authMiddleware],  ClientController.getOneExpenses)
+route.get('/client/expense/all', [authMiddleware],  ClientController.getOneCostomers)
 
 export { route as RouterClient };
