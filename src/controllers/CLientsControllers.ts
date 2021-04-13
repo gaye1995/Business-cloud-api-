@@ -18,12 +18,13 @@ export class ClientController {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
         }
     }
-    
+    //   recupération d'un client
     static getOneCostomers = async (req: Request, res: Response) => {
         try {
-            const allCustomers: any = await Client.find({});
-            const a: any = clientListe(allCustomers);
-            res.status(200).send({ error: true, Client: a });
+            const { id } = req.params;
+            const allCustomers: any = await Client.find({_id: id});
+            const client: any = clientListe(allCustomers);
+            res.status(200).send({ error: false, Client: client});
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
         }
@@ -39,13 +40,21 @@ export class ClientController {
         }
     }
 
-    // Requete et fonction consernant les Factures des Clients
-
+    // Requete et fonction consernant les dépenses des Clients
+    static getOneExpenses = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const userExpense: any = await UserExpense.find({_id: id});
+            res.status(200).send({ error: false, Expense: userExpense });
+        } catch (err) {
+            if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
+        }
+    }
  
 
     // Requete et fonction consernant les Dépenses 
 
-    static UserExpense = async (req: Request, res: Response) => {
+    static allUserExpense = async (req: Request, res: Response) => {
         try {
             const allUserExpense: any = await UserExpense.find({});
             if (!allUserExpense) throw { code : 400}
