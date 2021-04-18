@@ -5,6 +5,7 @@ import { BillInterface, EditBill } from '../../interfaces/BillInterface';
 import { Bill } from '../../models/BillModel';
 import { ActifInterface, ChargeInterface, EditActif } from '../../interfaces/BilanInterface';
 import { Actif } from '../../models/ActifModel';
+import { Passif } from '../../models/PassifModel';
 import { Charge } from '../../models/ChargeModel';
 
 config();
@@ -16,8 +17,8 @@ export const updateBill = async (bill: BillInterface, updateAllData: EditActif):
 export const updateActif = async (actif: ActifInterface, updateAllData: ActifInterface): Promise<void> => {
      await Actif.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $set  : updateAllData});
 };  
-export const updatePassif = async (passif: ActifInterface, updateAllData: ActifInterface): Promise<void> => {
-     await Actif.updateOne({ _id: mongoose.Types.ObjectId(passif._id)}, { $set  : updateAllData});
+export const updatePassif = async (passif: ActifInterface, updateAllData: any): Promise<void> => {
+     await Passif.updateOne({ _id: mongoose.Types.ObjectId(passif._id)}, { $set  : updateAllData});
 };  
 
 export const updateCharge = async (charge: ChargeInterface, updateAllData: ChargeInterface): Promise<void> => {

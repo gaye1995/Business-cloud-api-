@@ -1,19 +1,36 @@
 import mongoose from 'mongoose';
 
 const passifSchema = new mongoose.Schema({
-    passifNum: {
-        type: String,
-        required: [true],
-    },
-    userExpenseNum: {
-        type: mongoose.Schema.Types.ObjectId,
-    },
-    totalTTC: {
+    capitauxPropres: [{
+        _id: false,
+        capital: {
+            type: Number
+        },
+        resultat: {
+            type: Number,
+        }
+    }],
+    totalI: {
         type: Number,
     },
-    bilanDate: {
-        type: Date,
+    dettes: [{
+        _id: false,
+        emprunts: {
+            type: Number,
+        },
+        detteFournisseurs: {
+            type: Number,
+        },
+        autresDette: {
+            type: Number,
+        },
+    }],
+    totalII: {
+        type: Number,
     },
+    totalPassif: {
+        type: Number,
+    }
 }, { timestamps: true });
 
 const Passif = mongoose.model('passif', passifSchema);

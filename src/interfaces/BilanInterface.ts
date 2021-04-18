@@ -3,12 +3,24 @@ import mongoose from 'mongoose';
 export interface ActifInterface {
     _id: string;
     immobilisation?: ActifArticleInterface[];
+    totalI?: Number;
     creance?:  ActifBillInterface[];
+    totalII?: Number;
     disponibilite?: ActifBanqueInterface[];
+    totalIII?: Number;
     totalActif?: number;
     actifDateDebut?: Date;
     actifDateFin?: Date;
 
+}
+export interface ActifInterfaceJson {
+    immobilisation?: ActifArticleInterface[];
+    totalI?: Number;
+    creance?:  ActifBillInterface[];
+    totalII?: Number;
+    disponibilite?: ActifBanqueInterface[];
+    totalIII?: Number;
+    totalActif?: number;
 }
 export interface EditActif {
     immobilisation?: ActifArticleInterface[];
@@ -31,11 +43,9 @@ export interface ActifBanqueInterface {
 }
 export interface PassifInterface {
     _id: string;
-    articleId: mongoose.Schema.Types.ObjectId,
-    expense:  PassifExpenseInterface[];
-    totalPassif: number;
-    passifDateDebut: Date;
-    passifDateFin: Date;
+    capitauxPropres?: Array<Object>,
+    dettes?: Array<Object>,
+    totalPassif?: number;
 }
 export interface PassifExpenseInterface {
     userExpenseNum: string;

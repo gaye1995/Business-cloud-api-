@@ -11,6 +11,9 @@ const actifSchema = new mongoose.Schema({
             type: Number,
         },
     }],
+    totalI: {
+        type: Number,
+    },
     creance: [{
         _id: false,
         billId: {
@@ -18,10 +21,15 @@ const actifSchema = new mongoose.Schema({
             ref: 'bill',
         },
     }],
+    totalII: {
+        type: Number,
+    },
     disponibilite: [{
         disponibilite: Number,
     }],
-
+    totalIII: {
+        type: Number,
+    },
     totalActif: {
         type: Number,
     },

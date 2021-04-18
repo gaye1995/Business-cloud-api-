@@ -1,5 +1,6 @@
 import { ArticleInterface, ArticleInterfaceJson } from "../interfaces/ArticleInterface";
 import { BanqueInterface, BanqueInterfaceJson } from "../interfaces/BanqueInterface";
+import { ActifInterface, ActifInterfaceJson } from "../interfaces/BilanInterface";
 import { UsersInterface, UsersInterfaceJson, ClientInterfaceJson, ClientInterface} from "../interfaces/UsersInterface";
 
 export const UserJSON = (user: UsersInterface ): UsersInterfaceJson => {
@@ -75,4 +76,17 @@ export const ArticleJSON = (article: ArticleInterface ): ArticleInterfaceJson =>
     };
  
     return MoreOfUser;
+};
+export const ActifJSON = (actif: ActifInterface ): ActifInterfaceJson => {
+    const MoreOBanque: ActifInterfaceJson = {
+    immobilisation : actif.immobilisation,
+    totalI : actif.totalI,
+    creance: actif.creance,
+    totalII : actif.totalII,
+    disponibilite : actif.disponibilite,
+    totalIII : actif.totalIII,
+    totalActif : actif.totalActif,
+   
+    };
+    return MoreOBanque;
 };

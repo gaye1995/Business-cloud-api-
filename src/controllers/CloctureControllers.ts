@@ -1,17 +1,11 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { updateActif } from '../helpers/checkFunction/editBill';
 import Datahelpers from '../helpers/Datahelpers';
-import { ArticleInterface } from '../interfaces/ArticleInterface';
-import { ActifArticleInterface, ActifBillInterface, ActifInterface } from '../interfaces/BilanInterface';
 import { Actif } from '../models/ActifModel';
-import { Article } from '../models/ArticleModel';
-import { Bill } from '../models/BillModel';
 import { Charge } from '../models/ChargeModel';
-import { UserExpense } from '../models/DepenseModel';
 import { Passif } from '../models/PassifModel';
-import { insertActifOfCreance, insertActifOfImmo, insertChargeOfExpense } from '../utils/insertData';
-import { ArticleJSON } from '../utils/returnData';
+import { insertActifOfCreance, insertActifOfImmo, insertChargeOfExpense, insertPassif } from '../utils/insertData';
+import { ActifJSON } from '../utils/returnData';
 
 export class CloctureController {
     // Création de l'actif du bilan
@@ -21,10 +15,13 @@ export class CloctureController {
             const { actifDate } = req.body;
             //verification du format de la date
             if (!actifDate && !Datahelpers.checkDate(actifDate)) throw {code: 405};
-            req.body.actifImmobilisee = [];
+            req.body.immobilisation = [];
+            req.body.totalI = 0;
             req.body.creance = [];
+            req.body.totalII = 0;
             req.body.disponibilite = [];
-            req.body.totalTTC = 0;
+            req.body.totalIII = 0;
+            req.body.totalActif = 0;
             // insertion des données
             const actif : any = await Actif.create(req.body);
             // réponse attendu
@@ -39,22 +36,18 @@ export class CloctureController {
     // Création du passif du bilan
     static createBilanPassif = async (req: Request, res: Response) => {
         try {
-            // recupération de la date
-            const { passifDate } = req.body;
-            //verification du format de la date
-            if (!passifDate && !Datahelpers.checkDate(passifDate)) throw {code: 405};
             // initialisation des données
-            req.body.expense = [];
+            req.body.capitauxPropres = [];
+            req.body.dettes = [];
+            req.body.totalII = 0;
             req.body.totalPassif = 0;
-            console.log(req.body);
             // création des données
-            const actif : any = await Passif.create(req.body);
+            const passif : any = await Passif.create(req.body);
             // réponse attendu    
-            res.status(200).send({ error: false, message: 'Passif Bilan created', actif: { expense: actif.expense, date: actif.totalPassif } });
+            res.status(200).send({ error: false, message: 'Passif Bilan created', passif: passif });
         } catch (err) {
             if (err.code === 405) res.status(402).send({error: true, message: 'incorect format date' });
             else Datahelpers.errorHandler(res, err);
-
         }
     } 
     // création de charge de compte de resultat
@@ -81,20 +74,20 @@ export class CloctureController {
     static createProduit = async (req: Request, res: Response) => {
         try {
             // recupération de la date
-            const { chargeDate } = req.body;
+            const { produitDate } = req.body;
             //verification du format de la date
-            if (!chargeDate && !Datahelpers.checkDate(chargeDate)) throw { code: 405 };
+            if (!produitDate && !Datahelpers.checkDate(produitDate)) throw { code: 405 };
             // initialisation des données
-            req.body.expense = [];
+            req.body.project = [];
             req.body.totalProduit = 0;
             // création des données
-            const charge: any = await Charge.create(req.body);
-            // réponse attendu    
-            res.status(200).send({ error: false, message: 'Charge des compte de resultat  created', charge: { expense: charge.expense } });
-        } catch (err) {
+            // const produit: any = await Produit.create(req.body);
+            // // réponse attendu    
+            // res.status(200).send({ error: false, message: 'Produit des compte de resultat  created', produit: { expense: produit.project } });
+            } catch (err) {
             if (err.code === 405) console.log('incorect format date');
             else Datahelpers.errorHandler(res, err);
-        }
+            }
     }
     static updateActif = async (req: Request, res: Response) => {
         try {
@@ -104,10 +97,14 @@ export class CloctureController {
             // recherche de l'actif
             const actif: any = await Actif.findOne({ _id: id });
             if (!actif) throw { code : 401 };
-            const creanceA : any = await insertActifOfCreance(actif, creance);
-            const immoA : any = await insertActifOfImmo(actif, immobilisation);
+            await insertActifOfCreance(actif, creance);
+            await insertActifOfImmo(actif, immobilisation);
+            const totalA : any = actif.totalI + actif.totalII + actif.totalIII ;
+            await Actif.findOne({ _id: mongoose.Types.ObjectId(id)}).populate('creance.billId');
+            await Actif.findOne({ _id: mongoose.Types.ObjectId(id)}).populate('immobilisation.articleId');
+            await Actif.updateOne({ _id: mongoose.Types.ObjectId(id)}, { $set  : {totalActif : totalA}});
             // réponse  
-            res.status(200).send({ error: false, message: 'actif successfully updated', actif: creanceA ,});
+            res.status(200).send({ error: false, message: 'actif successfully updated', actif: ActifJSON(actif)});
         } catch (err) {
             if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
             if (err.code === 401) res.status(401).send({ error: true, message: 'L\'actif que vous avez indiquez est inexistant ' });
@@ -116,26 +113,25 @@ export class CloctureController {
 
         }
     }
-    // static updatePassif = async (req: Request, res: Response) => {
-    //     try {
-    //         // Récupération de toutes les données du body
-    //         const { id, articles} = req.body;
-
-    //         // Vérification de si toutes les données nécessaire sont présentes
-    //         if (!id) throw { code:400 } ;
-    //         // Vérification du passif  existe
-    //         const passif: any = await Passif.findOne({_id: id});
-    //         if (!passif) throw { code : 401 };
-
-    //         // Envoi de la réponse
-    //         res.status(200).send({ error: false, message: 'actif successfully updated',actif : passif});
-    //     } catch (err) {
-    //         if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
-    //         if (err.code === 401) res.status(401).send({ error: true, message: 'Le passif que vous avez indiquez est inexistant ' });
-
+    static updatePassif = async (req: Request, res: Response) => {
+        try {
+            // Récupération de toutes les données du body
+            const { idActif, idPassif, dette} = req.body;
+            // Vérification de si toutes les données nécessaire sont présentes
+            if (!idPassif) throw { code:400 } ;
+            // Vérification du passif  existe
+            const passif: any = await Passif.findOne({_id: idPassif});
+            if (!passif) throw { code : 401 };
+            await insertPassif(idActif,passif,dette);
+            // await Passif.updateOne({ _id: mongoose.Types.ObjectId(idPassif)}, { $set  : {totalPassif : passif}});
+                       // Envoi de la réponse
+            res.status(200).send({ error: false, message: 'passif successfully updated',passif : passif});
+        } catch (err) {
+            if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
+            if (err.code === 401) res.status(401).send({ error: true, message: 'Le passif que vous avez indiquez est inexistant ' });
         
-    //     }
-    // }
+        }
+    }
     static updateCharge = async (req: Request, res: Response) => {
         try {
             // Récupération de toutes les données du body

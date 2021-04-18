@@ -1,25 +1,30 @@
 import mongoose from 'mongoose';
 
-const userExpenseSchema = new mongoose.Schema({
-    userExpenseNum: {
+const expenseSchema = new mongoose.Schema({
+    expenseNum: {
         type: String,
-        required: [true],
+        required: true,
     },
     price: {
         type: Number,
-        required: [true],
+        required: true,
     },
     category: {
         type: String,
-        required: [true],
+        required: true,
     },
     accountNumber: {
         type: Number,
-        required: [true],
+        required: true,
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [true],
+        required: true,
+        ref: 'user'
+    },
+    projectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
     },
     file: {
         type: String,
@@ -27,8 +32,12 @@ const userExpenseSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    billable: {
+        type: Boolean,
+        default: 'true',
+    },
 }, { timestamps: true });
 
-const UserExpense = mongoose.model('userExpense', userExpenseSchema);
+const Expense = mongoose.model('userexpenses', expenseSchema);
 
-export { UserExpense };
+export { Expense };
