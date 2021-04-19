@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     role: {
-        type: Enumerator,
+        type: String,
         required: true,
     },
     phone: {

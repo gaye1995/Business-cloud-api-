@@ -42,11 +42,12 @@ export class ComptableController {
 
     static register = async (req: Request, res: Response) => {
         try {
-            const { name, email, password, role, numSIRET, societe } = req.body;
+            const { name, email, password, confirm , role, siret, societe } = req.body;
             req.body.lastLogin = 0;
             req.body.attempt = 0;
-            if (!name || !email || !password || !role || !numSIRET || !societe ) throw {code: 400};
+            if (!name || !email || !password || !role || !siret || !societe ) throw {code: 400};
             if (role != ('comptable').toLocaleLowerCase()) throw { code : 406}
+            if(password != confirm ) throw {code: 407}
             if (!Datahelpers.checkEmail(email)) throw {code: 401};
             const User: any = await UserModel.findOne({email : email});
             // email existe 
@@ -70,6 +71,7 @@ export class ComptableController {
             if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
             if (err.code === 405) res.status(400).send({ error: true, message: 'incorect format date' });
             if (err.code === 406) res.status(401).send({ error: true, message: 'Seule les comptables peuvent s\'inscrire' });
+            if (err.code === 407) res.status(401).send({ error: true, message: 'Veuillez mettre le méme password sur confirm' });
         }
 
     } 
