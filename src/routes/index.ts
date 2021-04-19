@@ -1,10 +1,16 @@
+import express from 'express';
+import { RouterUser} from './auth.route';
+import { RouterBanque } from './banque.route';
+import { RouterClient } from './client.route';
+import { RouterEmployee } from './employee.route';
+import {RouterClocture} from './clocture.route';
+const route: express.Application = express();
 
-// let expresse:any = require('express');
-// const router:any = expresse.Router();
-// const authe:any = require('./auth.route');
+route.use(RouterUser);
+route.use(RouterBanque);
+route.use(RouterClient);
+route.use(RouterEmployee);
+route.use(RouterClocture);
 
 
-// router.use('/auth', authe);
-
-// module.exports = router;
-
+export { route as AllRoute};
