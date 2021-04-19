@@ -6,7 +6,7 @@ import cors from 'cors';
 import { AllRoute } from './src/routes';
 import bodyParser from 'body-parser';
 
-const port: string | undefined = process.env.PORT;
+const port: string | number = process.env.PORT || 5000;
 
 const app: express.Application = express();
 app.use(cors());
