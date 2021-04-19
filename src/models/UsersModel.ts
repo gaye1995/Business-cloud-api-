@@ -10,6 +10,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    societe: {
+        type: String,
+        required: true,
+    },
+    siret: {
+        type: String,
+        required: true,
+    },
     role: {
         type: String,
         required: true,
