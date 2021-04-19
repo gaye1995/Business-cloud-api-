@@ -86,8 +86,8 @@ export const insertPassif = async (actifBilan: any, passif: any, dettes: any )=>
     return dataPassif;
 
 }
-export const insertChargeOfExpense = async (charge: any, exploitation: any )=>  {
-    if (exploitation) {
+export const insertChargeOfExpense = async (charge: any, exploitation: any , financier: any,exceptionnelle: any)=>  {
+    if (exploitation || financier || exceptionnelle) {
         exploitation.map(async (expense: PassifExpenseInterface) => {
             if (!expense.userExpenseNum) throw new Error('Invalid article format');
             const expenceFind: any = await Expense.findOne({ _id: mongoose.Types.ObjectId(expense.userExpenseNum) });
@@ -96,6 +96,8 @@ export const insertChargeOfExpense = async (charge: any, exploitation: any )=>  
     }
     const UpdateDataExplotatation: any = {};
     if (exploitation) UpdateDataExplotatation.exploitation = charge.exploitation = exploitation;
+    if (financier) UpdateDataExplotatation.financier = charge.financier = financier;
+    if (exceptionnelle) UpdateDataExplotatation.exceptionnelle = charge.exceptionnelle = exceptionnelle;
     // insertion des depense dans le charge du compte de resultat
     await updateCharge(charge, UpdateDataExplotatation);
     // recupération de la totalité des données des expenses

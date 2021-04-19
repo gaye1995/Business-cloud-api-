@@ -27,6 +27,7 @@ export default class Datahelpers {
     static checkIban(iban: string): boolean {
         return IBAN.isValid(iban);
     }
+    
     /**
  * Fontion d'envoi des erreurs non géré par l'api
  * @param res Réponse express

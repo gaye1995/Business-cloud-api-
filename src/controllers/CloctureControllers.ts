@@ -53,18 +53,19 @@ export class CloctureController {
     // création de charge de compte de resultat
     static createCharge = async (req: Request, res: Response) => {
         try {
-            // recupération de la date
-            const { chargeDate } = req.body;
-            //verification du format de la date
-            if (!chargeDate && !Datahelpers.checkDate(chargeDate)) throw {code: 405};
+        
             // initialisation des données
-            req.body.explotatation = [];
-            req.body.totalPassif = 0;
-            console.log(req.body);
+            req.body.exploitation = [];
+            req.body.totalI = 0;
+            req.body.financier = [];
+            req.body.totalII = 0;
+            req.body.exceptionnelle = [];
+            req.body.totalIII = 0;
+            req.body.totalCharge = 0;
             // création des données
             const charge : any = await Charge.create(req.body);    
             // réponse attendu    
-            res.status(200).send({ error: false, message: 'Charge des compte de resultat  created', charge: { expense: charge.expense } });
+            res.status(200).send({ error: false, message: 'Charge du compte de resultat  created', charge: { expense: charge.expense } });
         } catch (err) {
             if (err.code === 405) console.log('incorect format date' );
             else Datahelpers.errorHandler(res, err);
@@ -135,14 +136,14 @@ export class CloctureController {
     static updateCharge = async (req: Request, res: Response) => {
         try {
             // Récupération de toutes les données du body
-            const { id, exploitation } = req.body;
+            const { idcharge, exploitation ,financier ,exceptionnelle } = req.body;
             // Vérification de si toutes les données nécessaire sont présentes
-            if (!id) throw {code : 400};
+            if (!idcharge) throw {code : 400};
 
             // Vérification de si la facture existe
-            const charge: any = await Charge.findOne({_id: id});
+            const charge: any = await Charge.findOne({_id: idcharge});
             if (!charge) throw {code : 401};
-            const expensesP : any = await insertChargeOfExpense(charge, exploitation);
+            const expensesP : any = await insertChargeOfExpense(charge, exploitation, financier,exceptionnelle);
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'charge successfully updated',charge : expensesP});
         } catch (err) {

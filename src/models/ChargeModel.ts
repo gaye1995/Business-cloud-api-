@@ -7,7 +7,28 @@ const chargeSchema = new mongoose.Schema({
             ref: 'expense',
         }
     }],
-    totalTTC: {
+    totalI: {
+        type: Number,
+    },
+    financier: [{
+        userExpenseNum: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'expense',
+        }
+    }],
+    totalII: {
+        type: Number,
+    },
+    exceptionnelle: [{
+        userExpenseNum: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'expense',
+        }
+    }],
+    totalIII: {
+        type: Number,
+    },
+    totalCharge: {
         type: Number,
     },
 }, { timestamps: true });
