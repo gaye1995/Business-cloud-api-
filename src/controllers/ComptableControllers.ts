@@ -42,18 +42,19 @@ export class ComptableController {
 
     static register = async (req: Request, res: Response) => {
         try {
-            const { name, email, password, role,  phone, birthdayDate, numSIRET, numRCS } = req.body;
+            const { name, email, password, role, numSIRET, societe } = req.body;
             req.body.lastLogin = 0;
             req.body.attempt = 0;
-            if (!name || !email || !password) throw {code: 400};
+            if (!name || !email || !password || !role || !numSIRET || !societe ) throw {code: 400};
+            if (role != ('comptable').toLocaleLowerCase()) throw { code : 406}
             if (!Datahelpers.checkEmail(email)) throw {code: 401};
             const User: any = await UserModel.findOne({email : email});
             // email existe 
             if (User) throw {code: 402}
             if (!Datahelpers.checkPassword(password)) throw {code: 403};
             req.body.password = await hashPassword(password);
-            if (phone && !Datahelpers.checkTel(phone)) throw {code: 404};
-            if (birthdayDate && !Datahelpers.checkDate(birthdayDate)) throw {code: 405};
+            // if (phone && !Datahelpers.checkTel(phone)) throw {code: 404};
+            // if (birthdayDate && !Datahelpers.checkDate(birthdayDate)) throw {code: 405};
             // Create user
             const user: any = await UserModel.create(req.body);
             const subject : string = 'Inscription'
@@ -68,6 +69,7 @@ export class ComptableController {
             if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
             if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
             if (err.code === 405) res.status(400).send({ error: true, message: 'incorect format date' });
+            if (err.code === 406) res.status(401).send({ error: true, message: 'Seule les comptables peuvent s\'inscrire' });
         }
 
     } 

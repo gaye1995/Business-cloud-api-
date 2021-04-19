@@ -10,8 +10,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    role: {
+    societe: {
         type: String,
+        required: true,
+    },
+    siret: {
+        type: String,
+        required: true,
+    },
+    role: {
+        type: Enumerator,
         required: true,
     },
     phone: {
