@@ -118,13 +118,14 @@ export class ComptableController {
     }
     static forgetPassword = async (req: Request, res: Response) => {
         try {
-            const email = req.body;
+            const {email} = req.body;
+            console.log(email)
             if (!email) throw {code: 400};
             const user: any = await UserModel.findOne({email: email});
             if (user) {
                 const subject: string = 'Demande de réinitialisation du mot de passe'
-                const content: string = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
-                notifyNew(user.email, subject, content)
+                const content: any = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
+                await notifyNew(user.email, subject, content)
                 res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
             } else { 
                 throw { code: 401 }

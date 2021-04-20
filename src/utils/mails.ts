@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 (config);
 const emetedemail = process.env.EMAIL_USER;
 const emetedpassword =  process.env.EMAIL_PASSWORD;
-const notifyNew = async (email: string, mySubject: string, myContent: string): Promise<void> => {
+const notifyNew = async (email: string, mySubject: string, myContent: any): Promise<void> => {
 try {
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -19,7 +19,7 @@ try {
         from: emetedemail , 
         to: email,
         subject: mySubject,
-        content: myContent,
+        text: myContent,
     });
 
     // console.log(info);
