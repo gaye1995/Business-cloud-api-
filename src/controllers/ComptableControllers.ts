@@ -96,20 +96,21 @@ export class ComptableController {
     }
     static updateUsers = async (req: Request, res: Response) => {
         try {
-            const id :any = req.params;
             const authorization: any = req.headers.authorization;
             const token = await jwt.getToken(authorization);
             const dataparams = await jwt.getJwtPayload(token);
-            const data: any  = req.body;
+            const  data = req.body;
             const subject : string = 'modification';
             const content : string = 'vous venez de modifier certains de vos données sur le logiciel comptable Busines-Cloud';
             const user: any = await UserModel.findOne({ email: dataparams.email });
             if (data.password && !Datahelpers.checkPassword(dataparams.password)) throw {code: 403};
-            req.body.password = await hashPassword(dataparams.password);
+            // req.body.password = await hashPassword(dataparams.password);
             if (data.phone && !Datahelpers.checkTel(data.phone)) throw {code: 404};
             if (data.birthdayDate && !Datahelpers.checkDate(data.birthdayDate)) throw {code: 405};
+            console.log(user)
             await updateUser(user, data);
             await notifyNew(dataparams.email, subject, content);
+            res.status(201).send({ error: true, message: 'user updated' })
         } catch (err) {
             if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
             if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
@@ -118,13 +119,14 @@ export class ComptableController {
     }
     static forgetPassword = async (req: Request, res: Response) => {
         try {
-            const email = req.body;
+            const {email} = req.body;
+            console.log(email)
             if (!email) throw {code: 400};
             const user: any = await UserModel.findOne({email: email});
             if (user) {
                 const subject: string = 'Demande de réinitialisation du mot de passe'
-                const content: string = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
-                notifyNew(user.email, subject, content)
+                const content: any = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
+                await notifyNew(user.email, subject, content)
                 res.status(200).send({ error: false, message: 'an email has been sent to your email address' });
             } else { 
                 throw { code: 401 }
