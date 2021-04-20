@@ -96,20 +96,21 @@ export class ComptableController {
     }
     static updateUsers = async (req: Request, res: Response) => {
         try {
-            const id :any = req.params;
             const authorization: any = req.headers.authorization;
             const token = await jwt.getToken(authorization);
             const dataparams = await jwt.getJwtPayload(token);
-            const data: any  = req.body;
+            const  data = req.body;
             const subject : string = 'modification';
             const content : string = 'vous venez de modifier certains de vos données sur le logiciel comptable Busines-Cloud';
             const user: any = await UserModel.findOne({ email: dataparams.email });
             if (data.password && !Datahelpers.checkPassword(dataparams.password)) throw {code: 403};
-            req.body.password = await hashPassword(dataparams.password);
+            // req.body.password = await hashPassword(dataparams.password);
             if (data.phone && !Datahelpers.checkTel(data.phone)) throw {code: 404};
             if (data.birthdayDate && !Datahelpers.checkDate(data.birthdayDate)) throw {code: 405};
+            console.log(user)
             await updateUser(user, data);
             await notifyNew(dataparams.email, subject, content);
+            res.status(201).send({ error: true, message: 'user updated' })
         } catch (err) {
             if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
             if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
