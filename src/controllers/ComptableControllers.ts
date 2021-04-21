@@ -32,11 +32,12 @@ export class ComptableController {
             const dataUser: any = UserJSON(User);
 
             // Envoi de la réponse
-            res.status(200).send({ error: false, message: 'The user has been successfully connected', user: dataUser ,token : User.token});
+            res.status(200).send({ error: false, message: 'The user has been successfully connected', user: User });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
-            if (err.code === 402) res.status(400).send({ error: true, message: 'An account using this email address does not exist' });
-            if (err.code === 404) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
+            else if (err.code === 402) res.status(400).send({ error: true, message: 'An account using this email address does not exist' });
+            else if (err.code === 404) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
+            else Datahelpers.errorHandler(res, err);
         }
     }
 
@@ -65,13 +66,14 @@ export class ComptableController {
             res.status(200).send({ error: false, message: 'The user has been successfully created', user: { id: user.id, name: user.name, email: user.email } });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
-            if (err.code === 401) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
-            if (err.code === 402) res.status(409).send({ error: true, message: 'An account using this email address is already registered' });
-            if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
-            if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
-            if (err.code === 405) res.status(400).send({ error: true, message: 'incorect format date' });
-            if (err.code === 406) res.status(401).send({ error: true, message: 'Seule les comptables peuvent s\'inscrire' });
-            if (err.code === 407) res.status(401).send({ error: true, message: 'Veuillez mettre le méme password sur confirm' });
+            else if (err.code === 401) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
+            else if (err.code === 402) res.status(409).send({ error: true, message: 'An account using this email address is already registered' });
+            else if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
+            else if (err.code === 404) res.status(400).send({ error: true, message: ' incorrect phone number' });
+            else if (err.code === 405) res.status(400).send({ error: true, message: 'incorect format date' });
+            else if (err.code === 406) res.status(401).send({ error: true, message: 'Seule les comptables peuvent s\'inscrire' });
+            else if (err.code === 407) res.status(401).send({ error: true, message: 'Veuillez mettre le méme password sur confirm' });
+            else Datahelpers.errorHandler(res, err);
         }
 
     } 
@@ -133,7 +135,7 @@ export class ComptableController {
             }
         } catch (err) {
             if (err.code === 400) res.status(409).send({ error: true, message: 'One or more mandatory data is missing' });
-            if (err.code === 401) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
+            else if (err.code === 401) res.status(409).send({ error: true, message: 'An account using this email address does not exist' });
         }
     }
     //deconnexion

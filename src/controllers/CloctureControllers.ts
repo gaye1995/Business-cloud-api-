@@ -108,8 +108,8 @@ export class CloctureController {
             res.status(200).send({ error: false, message: 'actif successfully updated', actif: ActifJSON(actif)});
         } catch (err) {
             if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
-            if (err.code === 401) res.status(401).send({ error: true, message: 'L\'actif que vous avez indiquez est inexistant ' });
-            if (err.code === 402) res.status(401).send({ error: true, message: 'Une ou plusieurs article n\'existe pas ' });
+            else if (err.code === 401) res.status(401).send({ error: true, message: 'L\'actif que vous avez indiquez est inexistant ' });
+            else if (err.code === 402) res.status(401).send({ error: true, message: 'Une ou plusieurs article n\'existe pas ' });
             else Datahelpers.errorHandler(res, err);
 
         }
@@ -129,8 +129,8 @@ export class CloctureController {
             res.status(200).send({ error: false, message: 'passif successfully updated',passif : passif});
         } catch (err) {
             if (err.code === 400) res.status(401).send({ error: true, message: 'Champs id manquant' });
-            if (err.code === 401) res.status(401).send({ error: true, message: 'Le passif que vous avez indiquez est inexistant ' });
-        
+            else if (err.code === 401) res.status(401).send({ error: true, message: 'Le passif que vous avez indiquez est inexistant ' });
+            else Datahelpers.errorHandler(res, err);
         }
     }
     static updateCharge = async (req: Request, res: Response) => {

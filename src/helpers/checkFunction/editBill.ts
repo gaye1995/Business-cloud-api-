@@ -26,5 +26,6 @@ export const updateCharge = async (charge: ChargeInterface, updateAllData: Charg
 };  
 export const updateProduit = async (produit: ActifInterface, updateAllData: ActifInterface): Promise<void> => {
      await Actif.updateOne({ _id: mongoose.Types.ObjectId(produit._id)}, { $set  : updateAllData});
-};  
+};
+  
 

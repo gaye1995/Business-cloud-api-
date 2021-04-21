@@ -16,7 +16,8 @@ export const insertActifOfCreance = async (actif:any,creance: any )=>  {
     if (!creance) throw {code : 401};
     creance.map(async (bill: ActifBillInterface) => {
         if (!bill.billId) throw new Error('Invalid bill');
-        const billFind: any = await Bill.findOne({ _id: mongoose.Types.ObjectId(bill.billId) });
+        const billFind: any = await Bill.findOne({ _id: mongoose.Types.ObjectId(bill.billId)} );
+        console.log(billFind)
         if (!billFind) throw { code: 402 };
     });
     const UpdateDataCreance: any = {};
@@ -32,6 +33,7 @@ export const insertActifOfCreance = async (actif:any,creance: any )=>  {
     const populateActifCreance: any = await Actif.findOne({ _id: actif._id }).populate('creance.billId');
     return populateActifCreance;
 }
+
 
 export const insertActifOfImmo = async (actif:any,immobilisation: any )=>  {
     if (immobilisation) {
