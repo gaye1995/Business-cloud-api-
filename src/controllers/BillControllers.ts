@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { Bill } from '../models/BillModel';
-import { updateBill } from '../helpers/checkFunction/editBill';
+import { updateBill, updateBillComptable } from '../helpers/checkFunction/editBill';
 import Datahelpers from '../helpers/Datahelpers';
-import { UserModel } from '../models/UsersModel';
 import mongoose from 'mongoose';
 import { Enterprise } from '../models/EntrepriseModel';
 import { BillComptable } from '../models/BillComptableModel';
 import { BillComptableInterface, BillServiceI } from '../interfaces/BillComptableInterface';
 import { Service } from '../models/ServiceModel';
+import { ComptableModel } from '../models/ComptableModel';
 
 export class BillController {
     static CreateBill = async (req: Request, res: Response) => {
@@ -15,14 +15,14 @@ export class BillController {
             const { status, userId, entrepriseId, billNum, deadline, currency } = req.body;
             if (!status || !userId || !entrepriseId || !billNum || !deadline) throw {code: 400};
             if (!Datahelpers.billStatus(status)) throw {code: 401};
-            const userComptable: any = await UserModel.findOne({ _id: mongoose.Types.ObjectId(userId) });
+            const userComptable: any = await ComptableModel.findOne({ _id: mongoose.Types.ObjectId(userId) });
             if (!userComptable) throw {code: 402};
             const enterprise: any = await Enterprise.findOne({_id: mongoose.Types.ObjectId(entrepriseId)});
             if (!enterprise) throw {code : 403};
             if (!await Datahelpers.CheckBillNumber(billNum)) throw {code: 404};
             if (!Datahelpers.CheckDeadline(deadline)) throw {code: 405};
             req.body.deadline = new Date(deadline);
-            req.body.articles = [];
+            req.body.services = [];
             req.body.totalHT = 0;
             req.body.totalTTC = 0;
 
@@ -47,7 +47,6 @@ export class BillController {
             const { id, status, userId, billNum, currency, deadline } = req.body;
             // Récupération de toutes les données du body
             const services: Array<BillServiceI> = req.body.services;
-
             // Vérification de si toutes les données nécessaire sont présentes
             if (!id) throw new Error('Missing id field');
 
@@ -60,7 +59,7 @@ export class BillController {
 
             // Vérification de si le client existe
             if (userId) {
-                const comptable: any = await UserModel.findOne({_id: mongoose.Types.ObjectId(userId)});
+                const comptable: any = await ComptableModel.findOne({_id: mongoose.Types.ObjectId(userId)});
                 if (!comptable) throw new Error('Invalid customer id');
             }
 
@@ -72,13 +71,13 @@ export class BillController {
 
             // Vérification de la validité des articles et mise à jour du prix HT et TTC
             let STotalHT = 0;
-            let newTotalTTC = 0;
             if (services) {
                 for (const service of services) {
                     if (!service.serviceId || !service.duree) throw new Error('Invalid article format');
                     const serviceFind: any = await Service.findOne({_id: mongoose.Types.ObjectId(service.serviceId)});
-                    if (!serviceFind) throw new Error('Some article id are invalid');
-                    STotalHT += (serviceFind.price * serviceFind.duree);
+                    console.log(serviceFind)
+                    if (!serviceFind) throw new Error('Some service id are invalid');
+                    STotalHT += (serviceFind.price * service.duree);
                 }
             }
 
@@ -89,16 +88,16 @@ export class BillController {
             if (userId) updateBillC.userId = bill.userId = userId;
             if (billNum) updateBillC.billNum = bill.billNum = billNum;
             if (services) {
-                updateBillC.service = bill.service = services;
-                updateBillC.totalHT = STotalHT.toFixed(2);
+                updateBillC.services = bill.services = services;
+                updateBillC.STotalHT = STotalHT.toFixed(2);
             }
             if (currency) updateBillC.currency = bill.currency = currency;
             if (deadline) updateBillC.deadline = bill.deadline = deadline;
 
             // Modification de la facture
-            await updateBill(id, updateBillC);
+            await updateBillComptable(bill, updateBillC);
 
-            // Récupération de la facture avec les articles
+            // Récupération de la facture avec les services
             const billComptable: any = await BillComptable.findOne({_id: mongoose.Types.ObjectId(id)});
 
             // Envoi de la réponse

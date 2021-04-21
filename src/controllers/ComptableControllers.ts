@@ -6,31 +6,35 @@ import { UsersInterface } from '../interfaces/UsersInterface';
 import { UserModel } from '../models/UsersModel';
 import { notifyNew } from '../utils/mails';
 import * as jwt from '../middlewares/checkJwt';
-import { updateUser } from '../helpers/checkFunction/editUser';
+import { updateLastLogin, updateUser } from '../helpers/checkFunction/editUser';
 import { UserJSON } from '../utils/returnData'
+import { ComptableModel } from '../models/ComptableModel';
 
 export class ComptableController {
     static login = async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
             if (!email || !password) throw { code: 400 };
-            let User: any = await UserModel.findOne({email : email});
+            let User: any = await ComptableModel.findOne({email : email});
             // email doesn't existe 
             if (!User) throw { code: 402 }
 
-            // // verifier les tentatives de connexion
-            // const lastLogin = (Date.now() - User.lastLogin) / 1000;
+            // verifier les tentatives de connexion
+            const lastLogin = (Date.now() - User.lastLogin) / 1000;
 
-            // // Si l'utilisateur à respecter les deux minutes d'attente on remet sont nombres d'essai à 0
-            // if (User.attempt >= 5 && lastLogin > 300) await UserModel.updateOne({ _id: mongoose.Types.ObjectId(User._id)} ,{  $set: { lastLogin: Date.now(), attempt: User.attempt + 1 } });
+            // Si l'utilisateur à respecter les deux minutes d'attente on remet sont nombres d'essai à 0
+            if (User.attempt >= 5 && lastLogin > 300) await ComptableModel.updateOne({ _id: mongoose.Types.ObjectId(User._id)} ,{  $set: { lastLogin: Date.now(), attempt: User.attempt + 1 } });
 
-            // // On vérifie le nombre de connnexion et le temps depuis la dernière connexion
-            // if (User.attempt >= 5 && lastLogin < 300) throw new Error('Too many attempts on this email (5 max) - Please wait (5min)');
+            // On vérifie le nombre de connnexion et le temps depuis la dernière connexion
+            if (User.attempt >= 5 && lastLogin < 300) throw new Error('Too many attempts on this email (5 max) - Please wait (5min)');
 
-            if(!await comparePassword(password, User.password)) throw { code: 404}
+            if(!await comparePassword(password, User.password)){
+                throw { code: 404}
+            } 
+
             User = await jwt.getAuthToken(User);
             const dataUser: any = UserJSON(User);
-
+            await updateLastLogin(User, true);
             // Envoi de la réponse
             res.status(200).send({ error: false, message: 'The user has been successfully connected', user: User });
         } catch (err) {
@@ -50,7 +54,7 @@ export class ComptableController {
             if (role != ('comptable').toLocaleLowerCase()) throw { code : 406}
             if(password != confirm ) throw {code: 407}
             if (!Datahelpers.checkEmail(email)) throw {code: 401};
-            const User: any = await UserModel.findOne({email : email});
+            const User: any = await ComptableModel.findOne({email : email});
             // email existe 
             if (User) throw {code: 402}
             if (!Datahelpers.checkPassword(password)) throw {code: 403};
@@ -58,7 +62,7 @@ export class ComptableController {
             // if (phone && !Datahelpers.checkTel(phone)) throw {code: 404};
             // if (birthdayDate && !Datahelpers.checkDate(birthdayDate)) throw {code: 405};
             // Create user
-            const user: any = await UserModel.create(req.body);
+            const user: any = await ComptableModel.create(req.body);
             const subject : string = 'Inscription'
             const content : string = 'Bienvenue sur le logiciel comptable Busines-Cloud'
             await notifyNew(user.email, subject, content );
@@ -79,7 +83,7 @@ export class ComptableController {
     } 
     static getUsers = async (req: Request, res: Response) => {
         try {
-            const allUser : any = await UserModel.find({role: "comptable"});
+            const allUser : any = await ComptableModel.find();
             res.status(200).send({error: true, user: allUser });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'One or more mandatory data is missing' });
@@ -89,7 +93,7 @@ export class ComptableController {
     static getOneUser = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const USER: any = await UserModel.findOne({_id : id});
+            const USER: any = await ComptableModel.findOne({_id : id});
             const user: any = UserJSON(USER);
             res.status(200).send({ error: false, user: user });
         } catch (err) {
@@ -104,7 +108,7 @@ export class ComptableController {
             const  data = req.body;
             const subject : string = 'modification';
             const content : string = 'vous venez de modifier certains de vos données sur le logiciel comptable Busines-Cloud';
-            const user: any = await UserModel.findOne({ email: dataparams.email });
+            const user: any = await ComptableModel.findOne({ email: dataparams.email });
             if (data.password && !Datahelpers.checkPassword(dataparams.password)) throw {code: 403};
             // req.body.password = await hashPassword(dataparams.password);
             if (data.phone && !Datahelpers.checkTel(data.phone)) throw {code: 404};
@@ -124,7 +128,7 @@ export class ComptableController {
             const {email} = req.body;
             console.log(email)
             if (!email) throw {code: 400};
-            const user: any = await UserModel.findOne({email: email});
+            const user: any = await ComptableModel.findOne({email: email});
             if (user) {
                 const subject: string = 'Demande de réinitialisation du mot de passe'
                 const content: any = 'Nous avons reçu une demande pour réinitialiser le mot de passe pour votre compte Si vous avez demandé une réinitialisation, cliquez sur le bouton ci-dessous. Si vous n\'avez pas fait cette demande, veuillez ignorer cet email.'
@@ -144,8 +148,8 @@ export class ComptableController {
         const authorization: any = req.headers.authorization;
         const token = await jwt.getToken(authorization);
         const dataparams = await jwt.getJwtPayload(token);
-        const user: any = await UserModel.findOne({ email: dataparams.email });
-        const deconnectCount = await UserModel.updateOne({ _id: mongoose.Types.ObjectId(user._id), email : user.email } ,{  $unset: {token : ""} });
+        const user: any = await ComptableModel.findOne({ email: dataparams.email });
+        const deconnectCount = await ComptableModel.updateOne({ _id: mongoose.Types.ObjectId(user._id), email : user.email } ,{  $unset: {token : ""} });
         console.log(user);
         // const deconnectCount = await UserModel.deleteOne({ token: user.token });
         if(!deconnectCount){

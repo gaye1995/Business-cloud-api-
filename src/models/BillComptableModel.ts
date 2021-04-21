@@ -5,6 +5,16 @@ const billComptableSchema = new mongoose.Schema({
         type: String,
         required: [true],
     },
+    services: [{
+        _id: false,
+        serviceId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'service',
+        },
+        duree: {
+            type: Number,
+        }
+    }],
     status: {
         type: String,
         required: [true],
@@ -17,15 +27,6 @@ const billComptableSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: [true],
     },
-    services: [{
-        serviceId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'service',
-        },
-        duree: {
-            type: Number,
-        }
-    }],
     tva: {
         type: Number,
     },

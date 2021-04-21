@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { config } from 'dotenv';
 import { UserModel } from '../models/UsersModel';
+import { ComptableModel } from '../models/ComptableModel';
 
 config();
 
@@ -21,7 +22,7 @@ middlewareAuth.use(async (req: Request, res: Response, next: NextFunction) => {
         if (!data || !data.email || !data._id) throw {code : 401}
 
         // Récupération de l'utilisateur pour le mettre dans le req et y avoir dans les routes après
-        const user : any = await UserModel.findOne({email: data.email});
+        const user : any = await ComptableModel.findOne({email: data.email});
         if (!user) throw {code : 402};
         Object.assign(req, { user });
 

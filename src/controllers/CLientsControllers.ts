@@ -16,7 +16,7 @@ export class ClientController {
             const allCustomers: any = await Client.find({});
             if(!allCustomers) throw {code : 400};
             const client: any = ClientJSON(allCustomers);
-            res.status(200).send({ error: false, Client: client });
+            res.status(200).send({ error: false, Client: allCustomers });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'il n\'y a pas de client' });
             else Datahelpers.errorHandler(res, err);
@@ -100,7 +100,6 @@ export class ClientController {
         try{
             const { id } = req.params;
             if(!id) throw {code : 400}
-            console.log(id)
             const expense: any = await Expense.findOne({ _id: mongoose.Types.ObjectId(id)});
             const userExpenses : any = expense.userId;
             const user: any = await UserModel.findOne({ _id: mongoose.Types.ObjectId(userExpenses)});

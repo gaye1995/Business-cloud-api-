@@ -4,9 +4,10 @@ export interface BillComptableInterface {
     status: string;
     userId: string;
     entrepriseId: string;
-    articles: BillServiceI[];
+    services?: BillServiceI[];
     currency?: string;
     taxe?: number;
+    tva?: number;
     totalHT: number;
     totalTTC: number;
     deadline: string;

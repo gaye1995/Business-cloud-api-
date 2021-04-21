@@ -30,6 +30,6 @@ const userExpenseSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-const UserExpense = mongoose.model('userExpense', userExpenseSchema);
+const UserExpense = mongoose.model('userexpenses', userExpenseSchema);
 
 export { UserExpense };
