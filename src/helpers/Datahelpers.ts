@@ -3,6 +3,7 @@ import IBAN from 'iban';
 import BIC from 'bic';
 import ibanConstructor from 'iban-constructor';
 import { Request, Response } from 'express';
+import { Bill } from '../models/BillModel';
 
 export default class Datahelpers {
 
@@ -27,7 +28,9 @@ export default class Datahelpers {
     static checkIban(iban: string): boolean {
         return IBAN.isValid(iban);
     }
-    
+    static billStatus(status: string): boolean {
+        return (status === 'Non payée' || status === 'Partiellement payée' || status === 'Payée' || status === 'En retard') ? true : false;
+    }    
     /**
  * Fontion d'envoi des erreurs non géré par l'api
  * @param res Réponse express
@@ -37,4 +40,19 @@ export default class Datahelpers {
     console.log(err);
     res.status(500).send({ error: true, message: 'Unexpected error', err });
 };
+static async CheckBillNumber(billNumber: string): Promise<boolean> {
+    if (billNumber.substring(0, 3) !== 'FAC') return false;
+    if (billNumber.length !== 9) return false;
+    const bills = await Bill.find({ billNum: billNumber });
+    if (bills.length !== 0) return false;
+    return true;
+}
+static CheckDeadline(deadline: string): boolean {
+    return ((new Date(deadline).getTime() - Date.now()) > 0) ? true : false;
+}
+static validPrice(price: string | number): number {
+    if (typeof price === 'number') return validator.toFloat((price as number).toFixed(2));
+    else return validator.toFloat(price);
+}
+
 }

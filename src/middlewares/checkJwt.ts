@@ -4,6 +4,7 @@ import jsonwebtoken, { JwtHeader, VerifyOptions } from 'jsonwebtoken';
 import { config } from 'dotenv';
 import { updateUser } from '../helpers/checkFunction/editUser';
 import { UserModel } from '../models/UsersModel';
+import { ComptableModel } from '../models/ComptableModel';
 
 config();
 
@@ -28,7 +29,7 @@ export const getJwtPayload = async(token: string): Promise < any | null > => {
 export const getAuthToken = async (user: any) => {
     const token = jsonwebtoken.sign({ _id: user._id, email: user.email }, JWT_KEY, { expiresIn: '24h' })
     user.token = token;
-    await UserModel.updateOne({ _id: mongoose.Types.ObjectId(user._id), email : user.email } ,{  $set: {token : user.token} });
+    await ComptableModel.updateOne({ _id: mongoose.Types.ObjectId(user._id), email : user.email } ,{  $set: {token : user.token} });
     return user;
 };
 
