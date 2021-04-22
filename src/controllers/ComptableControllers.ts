@@ -47,7 +47,7 @@ export class ComptableController {
 
     static register = async (req: Request, res: Response) => {
         try {
-            const { name, email, password, confirm , role, siret, societe } = req.body;
+            const { name, email, password, confirm , role, siret, societe, address, zip, ville } = req.body;
             req.body.lastLogin = 0;
             req.body.attempt = 0;
             if (!name || !email || !password || !role || !siret || !societe ) throw {code: 400};

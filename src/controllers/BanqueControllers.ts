@@ -44,11 +44,26 @@ export class BanqueController {
 
     }
     static listeBanque = async (req: Request, res: Response) => {
+        console.log('fghjk')
         try {
+            console.log('fghjk')
             const banque: any = await Comptebq.find({});
             console.log(banque)
             if (!banque) throw { code: 401 };
-            res.status(200).send({ error: false, message: 'liste des comptes ', banque : banque});
+            res.status(200).send({ error: false, message: 'liste des comptes ', banque: banque });
+        } catch (err) {
+            if (err.code === 401) res.status(400).send({ error: true, message: 'il n\'y a pas de compte enrégistré' });
+            else Datahelpers.errorHandler(res, err);
+        }
+
+    }
+    static getOneBanque = async (req: Request, res: Response) => {
+        try {
+            const {id} = req.params
+            const banque: any = await Comptebq.find({_id: mongoose.Types.ObjectId(id)});
+            console.log(banque)
+            if (!banque) throw { code: 401 };
+            res.status(200).send({ error: false, message: 'banque ', banque : banque});
             } catch (err) {
                 if (err.code === 401) res.status(400).send({ error: true, message: 'il n\'y a pas de compte enrégistré' });
                 else Datahelpers.errorHandler(res, err);
