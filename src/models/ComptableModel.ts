@@ -25,6 +25,15 @@ const comptableSchema = new mongoose.Schema({
     phone: {
         type: String,
     },
+    address: {
+        type: String,
+    },
+    zip: {
+        type: String,
+    },
+    ville: {
+        type: String,
+    },
     avatar: {
         type: String,
     },

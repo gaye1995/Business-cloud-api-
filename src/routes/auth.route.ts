@@ -16,7 +16,7 @@ route.put('/auth/user/createfacture', [authMiddleware], BillController.UpdateBil
 route.put('/auth/update-user', [authMiddleware],  ComptableController.updateUsers)
 route.get('/auth/user/all', [authMiddleware], ComptableController.getUsers)
 route.get('/auth/user/:id', [authMiddleware], ComptableController.getOneUser)
-route.delete('/auth/user/deconnect', [authMiddleware], ComptableController.deconnectUser)
+route.delete('/auth/user/deconnect', ComptableController.deconnectUser)
 
 
 export { route as RouterUser };
