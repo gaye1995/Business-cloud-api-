@@ -4,6 +4,7 @@ uploads/points/*
 uploads/zip/*
 uploads/unziped/*
 
+
 # Logs
 logs
 *.log
