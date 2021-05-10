@@ -6,7 +6,6 @@ import { BanqueJSON } from '../utils/returnData'
 import { updateBanque } from '../helpers/checkFunction/editBill';
 
 export class BanqueController {
-   
     static createBanque = async (req: Request, res: Response) => {
         try {
             const { libelle, libelleComptable, name, iban, bic, address, zip, city, country, firstname, lastname, email, phone, fax} = req.body;
@@ -27,7 +26,6 @@ export class BanqueController {
                 if (err.code === 403) res.status(409).send({ error: true, message: 'One of your data is incorrect' });
                 else Datahelpers.errorHandler(res, err);
             }
-
     }
     static deleteBanque = async (req: Request, res: Response) => {
         try {
