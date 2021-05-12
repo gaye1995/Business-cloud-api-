@@ -24,7 +24,6 @@ const expenseSchema = new mongoose.Schema({
     },
     projectId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
     },
     file: {
         type: String,
@@ -38,6 +37,6 @@ const expenseSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-const Expense = mongoose.model('expenses', expenseSchema);
+const Expense = mongoose.model('expense', expenseSchema);
 
 export { Expense };

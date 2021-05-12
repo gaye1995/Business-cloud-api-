@@ -85,7 +85,10 @@ export class ClientController {
     // Requete et fonction consernant les Dépenses 
 // route marche  pas
     static getExpense = async (req: Request, res: Response) => {
+        console.log("expenses")
+
         try {
+            console.log("expenses")
             const expenses: any = await Expense.find({});
             console.log(expenses)
             if (!expenses) throw { code : 400}
