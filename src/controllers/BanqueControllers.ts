@@ -6,7 +6,6 @@ import { BanqueJSON } from '../utils/returnData'
 import { updateBanque } from '../helpers/checkFunction/editBill';
 
 export class BanqueController {
-   
     static createBanque = async (req: Request, res: Response) => {
         try {
             const { libelle, libelleComptable, name, iban, bic, address, zip, city, country, firstname, lastname, email, phone, fax} = req.body;
