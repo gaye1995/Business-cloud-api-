@@ -10,10 +10,10 @@ route.get('/client/:id', [authMiddleware],  ClientController.getOneCostomers)
 route.delete('/client/:id', [authMiddleware],  ClientController.deleteCustomers)
 route.get('/client/facture/all', [authMiddleware],  BillController.getBill)
 route.get('/client/facture/:id', [authMiddleware],  BillController.getOneBill)
+route.get('/client/expense/all', [authMiddleware],  ClientController.getExpense)
 route.put('/client/facture/:id', [authMiddleware],  BillController.updateBill)
 route.delete('/client/facture/:id', [authMiddleware],  BillController.deleteBill)
 route.get('/client/expense/:id', [authMiddleware],  ClientController.getOneExpenses)
 route.delete('/client/expense/:id', [authMiddleware],  ClientController.deleteExpense)
-route.get('/client/expense/all', [authMiddleware],  ClientController.getExpense)
 
 export { route as RouterClient };
