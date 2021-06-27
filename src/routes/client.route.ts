@@ -13,6 +13,7 @@ route.get('/client/facture/:id', [authMiddleware],  BillController.getOneBill)
 route.get('/client/expense/all', [authMiddleware],  ClientController.getExpense)
 route.put('/client/facture/:id', [authMiddleware],  BillController.updateBill)
 route.delete('/client/facture/:id', [authMiddleware],  BillController.deleteBill)
+route.get('/client/expense/all', [authMiddleware],  ClientController.getExpense)
 route.get('/client/expense/:id', [authMiddleware],  ClientController.getOneExpenses)
 route.delete('/client/expense/:id', [authMiddleware],  ClientController.deleteExpense)
 
