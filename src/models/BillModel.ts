@@ -12,6 +12,7 @@ const billSchema = new mongoose.Schema({
     clientId: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true],
+        ref:'client'
     },
     enterpriseId: {
         type: mongoose.Schema.Types.ObjectId,

@@ -116,7 +116,7 @@ export class BillController {
 
     static getBill = async (req: Request, res: Response) => {
         try {
-            const allBill: any = await Bill.find({});
+            const allBill: any = await Bill.find({}).populate('clientId');
             if(!allBill) throw {code : 400}
             res.status(200).send({ error: true, Client: allBill });
         } catch (err) {
@@ -126,7 +126,7 @@ export class BillController {
     static getOneBill = async (req: Request, res: Response) => {
         try {
         const { id } = req.params;
-        const bill: any = await Bill.findOne({_id : id});
+        const bill: any = await Bill.findOne({_id : id}).populate('clientId');
         if (!bill) throw { code : 400}
         res.status(201).send({error: false, Message: "facture numéro : "+ bill.billNum, bill});
         } catch (err) {
