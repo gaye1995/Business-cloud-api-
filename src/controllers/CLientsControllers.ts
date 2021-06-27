@@ -71,7 +71,7 @@ export class ClientController {
         try {
             const { id } = req.params;
             if(!id) throw { code : 400}
-            const expense: any = await Expense.findOne({ _id: mongoose.Types.ObjectId(id)});
+            const expense: any = await Expense.findOne({ _id: mongoose.Types.ObjectId(id)}).populate('userId');
             if(!expense) throw { code : 401}
             res.status(200).send({ error: false, Expense: expense });
         } catch (err) {
@@ -86,7 +86,7 @@ export class ClientController {
 // route marche  pas
     static getExpense = async (req: Request, res: Response) => {
         try {
-            const expenses: any = await Expense.find({});
+            const expenses: any = await Expense.find({}).populate('userId');
             console.log(expenses)
             if (!expenses) throw { code : 400}
             res.status(200).send({ error: false, Depense: expenses });
