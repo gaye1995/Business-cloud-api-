@@ -118,7 +118,7 @@ export class BillController {
         try {
             const allBill: any = await Bill.find({}).populate('clientId');
             if(!allBill) throw {code : 400}
-            res.status(200).send({ error: true, Client: allBill });
+            res.status(200).send({ error: true, Bill: allBill });
         } catch (err) {
             if (err.code === 400) res.status(401).send({ error: true, message: 'Il n\'y a pas de facture' });
         }
@@ -131,6 +131,16 @@ export class BillController {
         res.status(201).send({error: false, Message: "facture numéro : "+ bill.billNum, bill});
         } catch (err) {
         if (err.code === 400)  res.status(401).send({error : true , message : 'la facture n\'existe pas' });            
+        }
+    }
+    static getBillbyClient = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const allBillByClient: any = await Bill.find({clientId : id}).populate('clientId');
+            if(!allBillByClient) throw {code : 400}
+            res.status(200).send({ error: true, Bill: allBillByClient });
+        } catch (err) {
+            if (err.code === 400) res.status(401).send({ error: true, message: 'Il n\'y a pas de facture' });
         }
     }
     static deleteBill = async(req: Request,res: Response) => {

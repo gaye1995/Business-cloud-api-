@@ -83,7 +83,7 @@ export class ClientController {
     }
 
     // Requete et fonction consernant les Dépenses 
-// route marche  pas
+    // route marche  pas
     static getExpense = async (req: Request, res: Response) => {
         try {
             const expenses: any = await Expense.find({}).populate('userId');
