@@ -24,6 +24,7 @@ export const ClientJSON = (user: ClientInterface ): ClientInterfaceJson => {
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+
     };
     if (user.birthdayDate) MoreOfUser.birthdayDate = user.birthdayDate;
     if (user.phone) MoreOfUser.phone = user.phone;
@@ -32,6 +33,9 @@ export const ClientJSON = (user: ClientInterface ): ClientInterfaceJson => {
     if (user.zip) MoreOfUser.zip = user.zip;
     if (user.city) MoreOfUser.city = user.city;
     if (user.country) MoreOfUser.country = user.country;
+    if (user.numTVA) MoreOfUser.numTVA = user.numTVA;
+    if (user.numRCS) MoreOfUser.numRCS = user.numRCS;
+    if (user.numSIRET) MoreOfUser.numSIRET = user.numSIRET;
  
     return MoreOfUser;
 };
