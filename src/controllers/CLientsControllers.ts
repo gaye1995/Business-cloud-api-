@@ -85,11 +85,8 @@ export class ClientController {
     // Requete et fonction consernant les Dépenses 
     // route marche  pas
     static getExpense = async (req: Request, res: Response) => {
-        console.log("expenses")
-
         try {
             const expenses: any = await Expense.find({}).populate('userId');
-            console.log(expenses)
             if (!expenses) throw { code : 400}
             res.status(200).send({ error: false, Depense: expenses });
         } catch (err) {
