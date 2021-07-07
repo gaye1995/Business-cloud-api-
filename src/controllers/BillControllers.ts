@@ -136,7 +136,7 @@ export class BillController {
     static getBillbyClient = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const allBillByClient: any = await Bill.find({clientId : id}).populate('clientId');
+            const allBillByClient: any = await Bill.find({clientId : id}).populate('client.clientId');
             if(!allBillByClient) throw {code : 400}
             res.status(200).send({ error: true, Bill: allBillByClient });
         } catch (err) {
