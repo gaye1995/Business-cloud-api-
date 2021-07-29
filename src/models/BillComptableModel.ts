@@ -22,6 +22,7 @@ const billComptableSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true],
+        ref: 'user',
     },
     entrepriseId: {
         type: mongoose.Schema.Types.ObjectId,
