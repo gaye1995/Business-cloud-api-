@@ -42,6 +42,26 @@ export class BillController {
             else Datahelpers.errorHandler(res, err);
         }
     }
+    static getBillbyComptable = async(req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const allBillByComp: any = await BillComptable.find({userId : id}).populate('user.userId');
+            if(!allBillByComp) throw {code : 400}
+            res.status(200).send({ error: true, BillComp: allBillByComp });
+        } catch (err) {
+            if (err.code === 400) res.status(401).send({ error: true, message: 'Il n\'y a pas de facture comptable' });
+        }
+    }
+    static getOneBillbyComptable = async(req: Request, res: Response) => {
+        try {
+        const { id } = req.params;
+        const billcomp: any = await BillComptable.findOne({_id : id}).populate('userId');
+        if (!billcomp) throw { code : 400}
+        res.status(201).send({error: false, Message: "facture numéro : "+ billcomp.billNum, billcomp});
+        } catch (err) {
+        if (err.code === 400)  res.status(401).send({error : true , message : 'la facture n\'existe pas' });            
+        }
+    }
     static UpdateBillComptable = async (req: Request, res: Response) => {
         try {
             const { id, status, userId, billNum, currency, deadline } = req.body;
@@ -133,6 +153,7 @@ export class BillController {
         if (err.code === 400)  res.status(401).send({error : true , message : 'la facture n\'existe pas' });            
         }
     }
+
     static getBillbyClient = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
