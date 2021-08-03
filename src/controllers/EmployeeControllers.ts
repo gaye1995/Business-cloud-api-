@@ -33,7 +33,7 @@ static getOneEmployee = async (req: Request, res: Response) => {
             const userExpenses: any = userexpense.userId;
             const user: any = await UserModel.findOne({ _id: mongoose.Types.ObjectId(userExpenses) });
             console.log(user)
-            res.status(200).send({ error: false, message: userexpense });
+            res.status(200).send({ error: false, userexpense: userexpense });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'le parametre id est manquant' });
         }
