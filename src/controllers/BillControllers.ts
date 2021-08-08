@@ -138,7 +138,7 @@ export class BillController {
         try {
             const allBill: any = await Bill.find({}).populate('clientId');
             if(!allBill) throw {code : 400}
-            res.status(200).send({ error: true, Bill: allBill });
+            res.status(200).send({ error: false, Bill: allBill });
         } catch (err) {
             if (err.code === 400) res.status(401).send({ error: true, message: 'Il n\'y a pas de facture' });
         }
