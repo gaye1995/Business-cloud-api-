@@ -27,12 +27,18 @@ static getOneEmployee = async (req: Request, res: Response) => {
 }
     static getUserExpense = async (req: Request, res: Response) => {
         try {
+            const userexpense: any = await UserExpense.find({}).populate('userId');
+            if(!userexpense) throw {code : 400}
+            res.status(200).send({ error: false, userexpense: userexpense });
+        } catch (err) {
+            if (err.code === 400) res.status(400).send({ error: true, message: 'Il n\'y a pas de note de frais' });
+        }
+    }
+    static getOneUserExpense = async (req: Request, res: Response) => {
+        try {
             const { id } = req.params;
             if (!id) throw { code: 400 }
             const userexpense: any = await UserExpense.findOne({ _id: mongoose.Types.ObjectId(id) });
-            const userExpenses: any = userexpense.userId;
-            const user: any = await UserModel.findOne({ _id: mongoose.Types.ObjectId(userExpenses) });
-            console.log(user)
             res.status(200).send({ error: false, userexpense: userexpense });
         } catch (err) {
             if (err.code === 400) res.status(400).send({ error: true, message: 'le parametre id est manquant' });
