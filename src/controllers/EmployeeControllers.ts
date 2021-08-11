@@ -27,7 +27,8 @@ static getOneEmployee = async (req: Request, res: Response) => {
 }
     static getUserExpense = async (req: Request, res: Response) => {
         try {
-            const userexpense: any = await UserExpense.find({}).populate('userId');
+            const { id } = req.params;
+            const userexpense: any = await UserExpense.find({userId: id}).populate('userId');
             if(!userexpense) throw {code : 400}
             res.status(200).send({ error: false, userexpense: userexpense });
         } catch (err) {
