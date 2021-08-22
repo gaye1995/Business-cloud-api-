@@ -11,6 +11,7 @@ route.post('/auth/login', ComptableController.login);
 route.post('/auth/register', ComptableController.register);
 route.post('/auth/forget-password', ComptableController.forgetPassword);
 route.post('/auth/user/createservice', [authMiddleware], ServiceController.createService)
+route.post('/services', [authMiddleware], ServiceController.getService)
 route.post('/auth/user/createfacture', [authMiddleware], BillController.CreateBill)
 route.get('/auth/user/:id/factures', [authMiddleware],  BillController.getBillbyComptable)
 route.get('/auth/user/:id/factures/:id', [authMiddleware],  BillController.getOneBillbyComptable)

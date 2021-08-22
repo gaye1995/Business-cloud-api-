@@ -26,4 +26,13 @@ static createService = async (req: Request, res: Response) => {
         else Datahelpers.errorHandler(res, err);
     }
 }
+    static getService = async (req: Request, res: Response) => {
+        try {
+            const allService: any = await Service.find({});
+            if(!allService) throw {code : 400}
+            res.status(200).send({ error: false, Services: allService });
+        } catch (err) {
+            if (err.code === 400) res.status(401).send({ error: true, message: 'Il n\'y a pas de Service ' });
+        }
+    }
 }
