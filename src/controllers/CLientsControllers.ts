@@ -6,6 +6,7 @@ import { Expense } from '../models/DepenseModel';
 import { ClientJSON } from '../utils/returnData';
 import Datahelpers from '../helpers/Datahelpers';
 import { UserModel } from '../models/UsersModel';
+import { Article } from '../models/ArticleModel';
 
 export class ClientController {
 
@@ -56,7 +57,7 @@ export class ClientController {
 
     static getArticle = async (req: Request, res: Response) => {
         try {
-            const allArticle: any = await Bill.find({});
+            const allArticle: any = await Article.find({});
             if(!allArticle) throw { code : 400}
             res.status(200).send({ error: false, Articles: allArticle });
         } catch (err) {
