@@ -13,6 +13,10 @@ const serviceSchema = new mongoose.Schema({
         type: Number,
         required: [true],
     },
+    nbheure: {
+        type: Number,
+        required: [true],
+    },
     description: {
         type: String,
     },

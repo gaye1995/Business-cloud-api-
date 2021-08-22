@@ -12,7 +12,7 @@ import { ComptableModel } from '../models/ComptableModel';
 export class BillController {
     static CreateBill = async (req: Request, res: Response) => {
         try {
-            const { status, userId, entrepriseId, billNum, deadline, currency } = req.body;
+            const { status, userId, entrepriseId, billNum, deadline } = req.body;
             if (!status || !userId || !entrepriseId || !billNum || !deadline) throw {code: 400};
             if (!Datahelpers.billStatus(status)) throw {code: 401};
             const userComptable: any = await ComptableModel.findOne({ _id: mongoose.Types.ObjectId(userId) });

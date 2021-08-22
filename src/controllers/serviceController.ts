@@ -6,10 +6,10 @@ export class ServiceController {
 static createService = async (req: Request, res: Response) => {
     try {
         // Récupération de toutes les données du body
-        const { name, accountNumber, price } = req.body;
+        const { name, accountNumber,nbheure, price } = req.body;
 
         // Vérification de si toutes les données nécessaire sont présentes
-        if (!name || accountNumber === undefined || price === undefined) throw {code : 400};
+        if (!name || accountNumber === undefined || price === undefined || !nbheure ) throw {code : 400};
 
         // Vérification de la validité du prix
         if (!Datahelpers.validPrice(price)) throw {code : 401};
