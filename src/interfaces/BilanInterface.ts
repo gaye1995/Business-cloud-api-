@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
-
+export interface BilanInterface {
+    _id: string;
+    actif?: ActifInterface[];
+    passif?:  PassifInterface[];
+    dateBilan: Date;
+}
 export interface ActifInterface {
     _id: string;
     immobilisation?: ActifArticleInterface[];
