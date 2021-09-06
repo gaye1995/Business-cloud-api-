@@ -183,7 +183,7 @@ export class CloctureController {
     static getBilan = async (req: Request, res: Response) => {
         try {
             
-            const allBilan: any = await Bilan.findOne({}).populate('actif.immobilisation.articleId').populate('actif.creance.billId');
+            const allBilan: any = await Bilan.find({}).populate('actif.immobilisation.articleId').populate('actif.creance.billId');
             // email doesn't existe 
             if (!allBilan) throw { code: 402 }
             
