@@ -136,7 +136,7 @@ export class BillController {
 
     static getBill = async (req: Request, res: Response) => {
         try {
-            const allBill: any = await Bill.find({}).populate('clientId');
+            const allBill: any = await Bill.find({}).populate('clientId', {password: 0}).populate('articles.articleId');
             if(!allBill) throw {code : 400}
             res.status(200).send({ error: false, Bill: allBill });
         } catch (err) {

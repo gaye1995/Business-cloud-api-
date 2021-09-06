@@ -10,14 +10,14 @@ import { updateActif, updateCharge, updatePassif } from '../helpers/checkFunctio
 import { Article } from '../models/ArticleModel';
 import { Charge } from '../models/ChargeModel';
 import { Expense } from '../models/DepenseModel';
+import { Bilan } from '../models/BilanModel';
 config();
 
-export const insertActifOfCreance = async (actif:any,creance: any )=>  {
+export const insertActifOfCreance = async (id : any, actif:any,creance: any )=>  {
     if (!creance) throw {code : 401};
     creance.map(async (bill: ActifBillInterface) => {
         if (!bill.billId) throw new Error('Invalid bill');
         const billFind: any = await Bill.findOne({ _id: mongoose.Types.ObjectId(bill.billId)} );
-        console.log(billFind)
         if (!billFind) throw { code: 402 };
     });
     const UpdateDataCreance: any = {};
@@ -29,13 +29,14 @@ export const insertActifOfCreance = async (actif:any,creance: any )=>  {
         const billFind: any = await Bill.findOne({ _id: mongoose.Types.ObjectId(creance[i].billId) });
         total = total + billFind.totalHT;
     }
-    await Actif.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $set  : {totalII : total}});
+    actif.totalII = total;
+    await Bilan.updateOne({ _id: mongoose.Types.ObjectId(id)}, { $set  : {actif : actif}});
     const populateActifCreance: any = await Actif.findOne({ _id: actif._id }).populate('creance.billId');
     return populateActifCreance;
 }
 
 
-export const insertActifOfImmo = async (actif:any,immobilisation: any )=>  {
+export const insertActifOfImmo = async (id: any, actif:any,immobilisation: any )=>  {
     if (immobilisation) {
         immobilisation.map(async (article: ActifArticleInterface) => {
             if (!article.articleId || !article.quantity) throw new Error('Invalid article format');
@@ -55,38 +56,37 @@ export const insertActifOfImmo = async (actif:any,immobilisation: any )=>  {
         const articleFind: any = await Article.findOne({ _id: mongoose.Types.ObjectId(immobilisation[i].articleId) });
         totalHT += (articleFind.price * immobilisation[i].quantity);
         totalTTC += ((articleFind.price * (1 + (articleFind.tva / 100))) * immobilisation[i].quantity);
-        total = total + totalTTC
+        total = total + totalTTC;
     }
-    await Actif.updateOne({ _id: mongoose.Types.ObjectId(actif._id)}, { $set  : {totalI : total}});
+    actif.totalI = total;
+    await Bilan.updateOne({ _id: mongoose.Types.ObjectId(id)}, { $set  : {actif : actif}});
     // recupération de la totalité des données de l'article
-    const populateActifImmo: any = await Actif.findOne({ _id: actif._id }).populate('immobilisation.articleId');
+    const populateActifImmo: any = await Bilan.findOne({ _id: actif._id }).populate('immobilisation.articleId');
     // Envoi de la réponse
     return populateActifImmo;
 
 }
 
-export const insertPassif = async (actifBilan: any, passif: any, dettes: any )=>  {
-    const capitalP : any = [{"capital": 120000}, {"resultat": 0}];
-    const actif: any = await Actif.findOne({_id: mongoose.Types.ObjectId(actifBilan)})
+export const insertPassif = async (id: any, passif: any, dettes: any ,capitauxPropre )=>  {
+    let totalI: number = 0;
+    let totalII: number = 0;
+    let resultat: number = 0;
     const UpdateDataPassif: any = {};
-    if (!dettes) throw {code : 404}
-    let totalI : number = 0;
-    let totalII : number = 0;
-    totalI = passif.capitauxPropres[0]["capital"] + passif.capitauxPropres[1]["resultat"] ;
-    totalII = passif.dettes[0]["emprunts"] + passif.dettes[1]["detteFournisseurs"] + passif.dettes[2]["autresDette"];
-    let resultat : number = actif.totalActif - (totalI + totalII);
-    console.log(actif.totalActif);
-    console.log(totalI + totalII);
-    console.log(resultat);
-    UpdateDataPassif.totalII = passif.totalII = totalII;
     UpdateDataPassif.dettes = passif.dettes = dettes;
-    UpdateDataPassif.capitauxPropres = passif.capitauxPropres = capitalP ;
-    UpdateDataPassif.dettes[1]["resultat"] = passif.dettes[1]["resultat"] = resultat ;
-    UpdateDataPassif.totalPassif = totalI + totalII + resultat ;
-    // insertion des immos dans l'actif
-    const dataPassif : any = await updatePassif(passif, UpdateDataPassif);
-    return dataPassif;
+    UpdateDataPassif.capitauxPropres = passif.capitauxPropres = capitauxPropre ;
+    // await updatePassif(passif, UpdateDataPassif);
+    const bilan: any = await Bilan.findOne({_id: mongoose.Types.ObjectId(id)})
+    totalI = passif.capitauxPropres[0]['capital'] + passif.capitauxPropres[1]['resultat'];
+    totalII = passif.dettes[0]["emprunts"] + passif.dettes[1]["detteFournisseurs"] + passif.dettes[2]["autresDette"];
+    resultat = bilan.actif.totalActif - (totalI + totalII);
+    UpdateDataPassif.totalI = passif.totalI = totalI;
+    UpdateDataPassif.totalII = passif.totalII = totalII;
+    UpdateDataPassif.capitauxPropres[1]["resultat"] = passif.capitauxPropres[1]["resultat"] = resultat ;
+    UpdateDataPassif.totalPassif = (totalI + totalII + resultat );
+    const dataPassif = await Bilan.updateOne({ _id: mongoose.Types.ObjectId(id)}, { $set : {passif: UpdateDataPassif}});
 
+    // const  : any = await updatePassif(passif, UpdateDataPassif);
+    return dataPassif;
 }
 export const insertChargeOfExpense = async (charge: any, exploitation: any , financier: any,exceptionnelle: any)=>  {
     if (exploitation || financier || exceptionnelle) {
