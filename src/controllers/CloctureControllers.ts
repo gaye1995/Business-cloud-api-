@@ -195,6 +195,21 @@ export class CloctureController {
 
         }
     }
+    static getOneBilan = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const bilan: any = await Bilan.findOne({_id:  mongoose.Types.ObjectId(id)}).populate('actif.immobilisation.articleId').populate('actif.creance.billId');
+            // email doesn't existe 
+            if (!bilan) throw { code: 400 }
+            
+            // réponse attendu
+            res.status(201).send({ error: false, message: ' Bilan de l\'année : ' +bilan.dateBilan });
+        } catch (err) {
+            if (err.code === 400)res.status(200).send({ error: true, message:' ce bilan n\'existe pas de bilan' });
+            else Datahelpers.errorHandler(res, err);
+
+        }
+    }
     static updateBilan = async (req: Request, res: Response) => {
         try {
             const { immobilisation , creance , dettes, capitauxPropres} = req.body;
