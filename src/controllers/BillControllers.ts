@@ -16,6 +16,8 @@ export class BillController {
             if (!status || !userId || !entrepriseId || !billNum || !deadline) throw {code: 400};
             if (!Datahelpers.billStatus(status)) throw {code: 401};
             const userComptable: any = await ComptableModel.findOne({ _id: mongoose.Types.ObjectId(userId) });
+            const bill: any = await BillComptable.findOne({ billNum: billNum });
+            if (bill) throw {code: 406};
             if (!userComptable) throw {code: 402};
             const enterprise: any = await Enterprise.findOne({_id: mongoose.Types.ObjectId(entrepriseId)});
             if (!enterprise) throw {code : 403};
@@ -34,11 +36,11 @@ export class BillController {
         } catch (err) {
             if (err.code === 400)  res.status(400).send({ error: true, message: 'Une des données important sont manquants' });
             else if (err.code === 401)  res.status(400).send({ error: true, message: 'Le status de la facture est invalide' });
-            else if (err.code === 401)  res.status(400).send({ error: true, message: 'Le status de la facture est invalide' });
             else if (err.code === 402)  res.status(400).send({ error: true, message: 'Le comptable n\'existe pas' });
             else if (err.code === 403)  res.status(400).send({ error: true, message: 'Verifier l\'Id de l\'entreprise' });
             else if (err.code === 404)  res.status(400).send({ error: true, message: 'Le numéro de facture est invalide' });
             else if (err.code === 405)  res.status(400).send({ error: true, message: 'Verifier la date de la facture' });
+            else if (err.code === 406)  res.status(400).send({ error: true, message: 'La facture existe déja' });
             else Datahelpers.errorHandler(res, err);
         }
     }
